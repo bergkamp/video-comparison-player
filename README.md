@@ -2,7 +2,8 @@
 
 ## 环境设置
 electron https://www.electronjs.org/docs/tutorial/quick-start
-node npm https://nodejs.org/en/download/
+
+node & npm https://nodejs.org/en/download/
 
 设置npm源
 ```bash
