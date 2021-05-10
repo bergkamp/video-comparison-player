@@ -12,12 +12,13 @@
           :multiple="true"
           :auto-upload="false"
         >
-          <el-button slot="trigger" size="small" type="primary"
-            >选取视频文件</el-button
+          <el-button slot="trigger" size="small" type="primary" icon="el-icon-document-add"
+            >选取2个视频文件</el-button
           >
         </el-upload>
       </el-col>
       <el-col :span="8" type="flex" justify="center">
+        <div style="text-align:center">
         <el-button-group>
           <el-button
             :disabled="disabledBtn"
@@ -44,6 +45,7 @@
             >暂停</el-button
           >
         </el-button-group>
+        </div>
       </el-col>
       <el-col :span="8" type="flex" justify="end">
         <div class="right">
@@ -208,7 +210,7 @@ export default {
       //open overlap button
       var videoBoxRect = this.videoBox.getBoundingClientRect();
       console.log(this.videoBoxRect);
-      this.overlapLine.style.left = videoBoxRect.width/2 -1 + "px";
+      this.overlapLine.style.left = videoBoxRect.width/2 - 2 + "px";
       this.overlapBtnShow = true;
 
       this.overlapBtn.addEventListener("mousedown", this.overlapBtnReady);
@@ -226,6 +228,12 @@ export default {
       if(this.overlapBtnClicked == false) return;
       var pos;
       pos = this.getCursorPos(e);
+
+      //限制移动边界
+      if(pos<10) pos =10;
+      var maxPos = this.videoBox.getBoundingClientRect().width-10;
+      if(pos > maxPos) pos = maxPos; 
+      
       this.overlapLine.style.left = pos + "px";
       pos = pos +1;
       this.leftPlayer.style.clipPath = "inset(0px 0px 0px " + pos  + "px)";
@@ -315,6 +323,7 @@ export default {
   opacity: 1;
   border-radius: 50%;
   right: -9px;
+  top:10px;
 }
 .img-comp-line {
   width: 2px;
