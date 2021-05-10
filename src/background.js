@@ -5,6 +5,11 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
+//关闭菜单
+const electron = require('electron')
+const Menu = electron.Menu
+Menu.setApplicationMenu(null)
+
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: false, standard: true } }
@@ -65,6 +70,7 @@ app.on('ready', async () => {
     }
   }
   createWindow()
+  Menu.setApplicationMenu(null);
 })
 
 // Exit cleanly on request from parent process in development mode.
