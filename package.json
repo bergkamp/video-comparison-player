@@ -1,6 +1,7 @@
 {
   "name": "video-comparison-player",
   "version": "0.1.0",
+  "description": "Video comparison player",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
