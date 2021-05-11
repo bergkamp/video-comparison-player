@@ -9,7 +9,7 @@ module.exports = {
             icon: './src/icon/icon.icns'
           },
           win: {
-            icon: './src/icon/icon.ico'
+            icon: './src/icon/icon.png'
           }
         }
       }
