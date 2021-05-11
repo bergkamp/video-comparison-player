@@ -10,10 +10,12 @@ module.exports = {
           },
           win: {
             icon: './src/icon/icon.png',
-            title: 'Video comparison player',
-            version: '0.1.0',
-            noMsi: false,
-            authors: 'Ruoshi'
+            target: 'nsis'
+          },
+          nsis:{//https://www.electron.build/generated/nsisoptions
+            oneClick: false,
+            allowToChangeInstallationDirectory: true,
+            createDesktopShortcut: true
           }
         }
       }
