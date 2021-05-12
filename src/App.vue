@@ -129,22 +129,19 @@ export default {
   methods: {
     handleChange(file, fileList) {
       console.log(fileList);
+      this.leftPlayer = this.$refs.leftPlayer;
+      this.rightPlayer = this.$refs.rightPlayer;
 
       var count = 0;
       fileList.forEach((element) => {
         if (count > 1) return;
-        var player;
         if (count == 0) {
-          player = this.$refs.leftPlayer;
           this.leftTitle = element.name;
-          this.leftPlayer = player;
+          this.loadPlay(element, this.leftPlayer);
         } else {
-          player = this.$refs.rightPlayer;
           this.rightTitle = element.name;
-          this.rightPlayer = player;
+          this.loadPlay(element, this.rightPlayer);
         }
-
-        this.loadPlay(element, player);
         count++;
       });
       //播放按钮
@@ -236,7 +233,8 @@ export default {
       
       this.overlapLine.style.left = pos + "px";
       pos = pos +1;
-      this.leftPlayer.style.clipPath = "inset(0px 0px 0px " + pos  + "px)";
+      pos = this.videoBox.getBoundingClientRect().width - pos;
+      this.leftPlayer.style.clipPath = "inset(0px " + pos + "px 0px 0px )";
       /* If the slider is no longer clicked, exit this function: */
       //if (clicked == 0) return false;
     },
