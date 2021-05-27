@@ -25,3 +25,11 @@ npm run electron:serve
 ```bash
 npm run electron:build
 ```
+
+
+## 参考
+https://itnext.io/electron-application-with-vue-js-and-vuetify-f2a1f9c749b8 
+
+https://element.eleme.cn/#/zh-CN/component/installation
+
+https://github.com/SavageCore/node-ffprobe-installer#readme 使用ffprobe-installer启动报错

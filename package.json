@@ -14,6 +14,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@ffprobe-installer/ffprobe": "^1.1.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.1",
     "img-comparison-slider": "^3.0.4",
