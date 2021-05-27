@@ -1,8 +1,9 @@
 # video-comparison-player
+[Electron](https://www.electronjs.org/docs/tutorial/quick-start)
+[Vue](https://cn.vuejs.org/v2/guide/)
+[ElementUI](https://element.eleme.cn/#/zh-CN)
 
 ## 环境设置
-electron https://www.electronjs.org/docs/tutorial/quick-start
-
 node & npm https://nodejs.org/en/download/
 
 设置npm源
