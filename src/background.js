@@ -5,6 +5,8 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
+//import { videoSupport } from './components/Ffprobe';
+
 //关闭菜单
 const electron = require('electron')
 const Menu = electron.Menu
@@ -27,7 +29,8 @@ async function createWindow() {
       
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+      //nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+      contextIsolation: false
     }
   })
 
@@ -87,3 +90,8 @@ if (isDevelopment) {
     })
   }
 }
+
+//ffprobe
+//import ffprobe from "@ffprobe-installer/ffprobe";
+//var ffprobe = require('ffprobe-static-electron');
+

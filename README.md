@@ -33,4 +33,8 @@ https://itnext.io/electron-application-with-vue-js-and-vuetify-f2a1f9c749b8
 
 https://element.eleme.cn/#/zh-CN/component/installation
 
-https://github.com/SavageCore/node-ffprobe-installer#readme 使用ffprobe-installer启动报错
+https://github.com/SavageCore/node-ffprobe-installer#readme
+
+ffprobe 安装问题  https://stackoverflow.com/questions/41292559/could-not-find-a-declaration-file-for-module-module-name-path-to-module-nam
+
+进程间通信 https://juejin.cn/post/6844903873237221384 
