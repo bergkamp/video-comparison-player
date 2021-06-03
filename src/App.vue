@@ -302,10 +302,6 @@ export default {
             var pos;
             pos = this.getCursorPos(e);
             this.overlapMove(pos);
-
-            
-            /* If the slider is no longer clicked, exit this function: */
-            //if (clicked == 0) return false;
         },
         //pos=center时回中，否则按照参数移动
         overlapMove(pos){
@@ -339,15 +335,17 @@ export default {
             x = x - window.pageXOffset;
             return x;
         },
+        
         //键盘快捷方式
         keyAlias(e){
+            this.$refs.topDiv.focus();
             if(this.disabledBtn == true) return;
             
             console.log(e);
             //一次移动的距离，按住shift加速一倍
-            let movePos = 10;
+            let movePos = 20;
             if(e.shiftKey==true){
-                movePos = 30;
+                movePos = movePos*4;
             }
 
             if(e.key == 'ArrowLeft'){
@@ -371,19 +369,6 @@ export default {
             if(e.code == 'Space'){//播放暂停
                 this.play();
             }
-
-
-            
-            // let pos = 100;
-            // if (pos < 10) pos = 10;
-            // var maxPos = this.videoBox.getBoundingClientRect().width - 10;
-            // if (pos > maxPos) pos = maxPos;
-
-            // this.overlapLine.style.left = pos + "px";
-            // pos = pos + 1;
-            // pos = this.videoBox.getBoundingClientRect().width - pos;
-            // this.leftPlayer.style.clipPath =
-            //     "inset(0px " + pos + "px 0px 0px )";
         }
     },
 };
