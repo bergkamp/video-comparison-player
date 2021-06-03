@@ -1,5 +1,5 @@
 <template class="app">
-    <div>
+    <div tabindex="1" ref="topDiv" @keydown="keyAlias($event)" style="outline:none">
         <el-row>
             <el-col :span="8">
                 <el-upload
@@ -157,6 +157,10 @@ export default {
     mounted() {
         this.leftPlayer = this.$refs.leftPlayer;
         this.rightPlayer = this.$refs.rightPlayer;
+        
+        // window.addEventListener("keydown", e => {
+        //     this.moveLineByKey(e);
+        // });
         //console.log(os.platform);
         //console.log(Ffprobe);
         //console.log(ffprobe.path, ffprobe.version);
@@ -199,7 +203,7 @@ export default {
             player.src = fileURL;
             var playPromise = player.play();
 
-            //https://www.jackpu.com/jie-jue-xin-ban-ben-chrome-ti-shi-domexception-the-play-request-was-interrupted/
+            //解决这个报错https://www.jackpu.com/jie-jue-xin-ban-ben-chrome-ti-shi-domexception-the-play-request-was-interrupted/
             if (playPromise !== undefined) {
                 playPromise
                     .then(() => {
@@ -239,6 +243,8 @@ export default {
                 this.rightPlayer.controls = true;
                 this.overlapBtnHandle(false);
             }
+            //清除掉按钮组的focus，否则方向键会变成重叠/分离按钮的切换
+            this.$refs.topDiv.focus();
         },
         overlapBtnHandle(show) {
             if (this.videoBox == null) {
@@ -278,7 +284,13 @@ export default {
             if (this.overlapBtnClicked == false) return;
             var pos;
             pos = this.getCursorPos(e);
+            this.overlapMove(pos);
 
+            
+            /* If the slider is no longer clicked, exit this function: */
+            //if (clicked == 0) return false;
+        },
+        overlapMove(pos){
             //限制移动边界
             if (pos < 10) pos = 10;
             var maxPos = this.videoBox.getBoundingClientRect().width - 10;
@@ -287,10 +299,7 @@ export default {
             this.overlapLine.style.left = pos + "px";
             pos = pos + 1;
             pos = this.videoBox.getBoundingClientRect().width - pos;
-            this.leftPlayer.style.clipPath =
-                "inset(0px " + pos + "px 0px 0px )";
-            /* If the slider is no longer clicked, exit this function: */
-            //if (clicked == 0) return false;
+            this.leftPlayer.style.clipPath = "inset(0px " + pos + "px 0px 0px )";
         },
         getCursorPos(e) {
             var a,
@@ -304,6 +313,34 @@ export default {
             x = x - window.pageXOffset;
             return x;
         },
+        //键盘快捷方式
+        keyAlias(e){
+            if(this.disabledBtn == true) return;
+            console.log(e);
+            if(e.key == 'ArrowLeft'){
+                
+                let pos = parseInt(this.overlapLine.style.left);
+                this.overlapMove(pos-20);
+            }
+
+            if(e.key == 'ArrowRight'){
+                
+                let pos = parseInt(this.overlapLine.style.left);
+                this.overlapMove(pos+20);
+            }
+
+            
+            // let pos = 100;
+            // if (pos < 10) pos = 10;
+            // var maxPos = this.videoBox.getBoundingClientRect().width - 10;
+            // if (pos > maxPos) pos = maxPos;
+
+            // this.overlapLine.style.left = pos + "px";
+            // pos = pos + 1;
+            // pos = this.videoBox.getBoundingClientRect().width - pos;
+            // this.leftPlayer.style.clipPath =
+            //     "inset(0px " + pos + "px 0px 0px )";
+        }
     },
 };
 </script>
@@ -398,5 +435,8 @@ video {
     /* width:800px;
   height:600px; */
     object-fit: contain;
+}
+.outline-none{
+    outline:none;
 }
 </style>
