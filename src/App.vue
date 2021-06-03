@@ -290,15 +290,24 @@ export default {
             /* If the slider is no longer clicked, exit this function: */
             //if (clicked == 0) return false;
         },
+        //pos=center时回中，否则按照参数移动
         overlapMove(pos){
+
+            var videoBoxWidth =this.videoBox.getBoundingClientRect().width;
+
+            //回中
+            if(pos == 'center'){
+                pos = videoBoxWidth/2 -2;
+            }
+
             //限制移动边界
             if (pos < 10) pos = 10;
-            var maxPos = this.videoBox.getBoundingClientRect().width - 10;
+            var maxPos = videoBoxWidth - 10;
             if (pos > maxPos) pos = maxPos;
 
             this.overlapLine.style.left = pos + "px";
             pos = pos + 1;
-            pos = this.videoBox.getBoundingClientRect().width - pos;
+            pos = videoBoxWidth - pos;
             this.leftPlayer.style.clipPath = "inset(0px " + pos + "px 0px 0px )";
         },
         getCursorPos(e) {
@@ -316,18 +325,35 @@ export default {
         //键盘快捷方式
         keyAlias(e){
             if(this.disabledBtn == true) return;
+            if(this.overlapBtnShow == false) return;
             console.log(e);
+            //一次移动的距离，按住shift加速一倍
+            let movePos = 10;
+            if(e.shiftKey==true){
+                movePos = 30;
+            }
+
             if(e.key == 'ArrowLeft'){
-                
+
                 let pos = parseInt(this.overlapLine.style.left);
-                this.overlapMove(pos-20);
+                console.log(pos,e.shiftKey);
+                this.overlapMove(pos-movePos);
             }
 
             if(e.key == 'ArrowRight'){
                 
                 let pos = parseInt(this.overlapLine.style.left);
-                this.overlapMove(pos+20);
+                this.overlapMove(pos+movePos);
             }
+
+            if(e.key == 'ArrowUp'){//回中
+                this.overlapMove('center');
+            }
+
+            if(e.key == 'Space'){//播放暂停
+                //TODO
+            }
+
 
             
             // let pos = 100;
