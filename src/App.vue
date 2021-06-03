@@ -36,17 +36,9 @@
                             :disabled="disabledBtn"
                             size="small"
                             type="primary"
-                            icon="el-icon-video-play"
-                            @click="play"
-                            >播放</el-button
-                        >
-                        <el-button
-                            :disabled="disabledBtn"
-                            size="small"
-                            type="primary"
-                            icon="el-icon-video-pause"
-                            @click="pause"
-                            >暂停</el-button
+                            :icon="doublePlay.icon"
+                            @click="play()"
+                            >{{doublePlay.text}}</el-button
                         >
                     </el-button-group>
                 </div>
@@ -149,6 +141,11 @@ export default {
             overlapLine: null,
             overlapBtnShow: false,
             overlapBtnClicked: false,
+            doublePlay:{
+                status:false,//true表示播放中，false表示暂停中
+                text:'播放',
+                icon:'el-icon-video-play'
+            }
         };
     },
     components: {
@@ -192,8 +189,6 @@ export default {
             //播放按钮
             if (this.leftPlayer.src != "" && this.rightPlayer.src != "") {
                 this.replayBtn = false;
-                this.playBtn = false;
-                this.pauseBtn = false;
                 this.disabledBtn = false;
             }
             this.fileList = [];
@@ -201,30 +196,52 @@ export default {
         loadPlay(file, player) {
             var fileURL = URL.createObjectURL(file.raw);
             player.src = fileURL;
-            var playPromise = player.play();
+            player.pause();
+            // var playPromise = player.play();
 
-            //解决这个报错https://www.jackpu.com/jie-jue-xin-ban-ben-chrome-ti-shi-domexception-the-play-request-was-interrupted/
-            if (playPromise !== undefined) {
-                playPromise
-                    .then(() => {
-                        // 这个时候可以安全的暂停
-                        //player.pause();
-                    })
-                    .catch(() => {});
-            }
+            // //解决这个报错https://www.jackpu.com/jie-jue-xin-ban-ben-chrome-ti-shi-domexception-the-play-request-was-interrupted/
+            // if (playPromise !== undefined) {
+            //     playPromise
+            //         .then(() => {
+            //             // 这个时候可以安全的暂停
+            //             //player.pause();
+            //         })
+            //         .catch(() => {});
+            // }
         },
-        play() {
-            this.leftPlayer.play();
-            this.rightPlayer.play();
+        play(status) {
+            console.log(this.doublePlay)
+            let nowStatus = this.doublePlay.status;
+            
+            if(typeof(status) !== 'undefined'){
+                nowStatus = status;
+                console.log(status);
+            }
+            
+            if(nowStatus == false){
+                this.doublePlay.status = true;
+                this.doublePlay.text = "暂停";
+                this.doublePlay.icon = "el-icon-video-pause";
+                
+                this.leftPlayer.play();
+                this.rightPlayer.play();
+            }else{
+                this.doublePlay.status = false;
+                this.doublePlay.text = "播放";
+                this.doublePlay.icon = "el-icon-video-play";
+                
+                this.leftPlayer.pause();
+                this.rightPlayer.pause();
+            }
+            console.log(this.doublePlay)
+
+            
         },
         replay() {
-            this.leftPlayer.currentTime = 0;
-            this.rightPlayer.currentTime = 0;
-            this.play();
+            this.play(false)
         },
         pause() {
-            this.leftPlayer.pause();
-            this.rightPlayer.pause();
+            
         },
         overlap() {
             console.log(this.overlapRadio);
@@ -325,7 +342,7 @@ export default {
         //键盘快捷方式
         keyAlias(e){
             if(this.disabledBtn == true) return;
-            if(this.overlapBtnShow == false) return;
+            
             console.log(e);
             //一次移动的距离，按住shift加速一倍
             let movePos = 10;
@@ -334,24 +351,25 @@ export default {
             }
 
             if(e.key == 'ArrowLeft'){
-
+                if(this.overlapBtnShow == false) return;
                 let pos = parseInt(this.overlapLine.style.left);
                 console.log(pos,e.shiftKey);
                 this.overlapMove(pos-movePos);
             }
 
             if(e.key == 'ArrowRight'){
-                
+                if(this.overlapBtnShow == false) return;
                 let pos = parseInt(this.overlapLine.style.left);
                 this.overlapMove(pos+movePos);
             }
 
             if(e.key == 'ArrowUp'){//回中
+                if(this.overlapBtnShow == false) return;
                 this.overlapMove('center');
             }
 
-            if(e.key == 'Space'){//播放暂停
-                //TODO
+            if(e.code == 'Space'){//播放暂停
+                this.play();
             }
 
 
