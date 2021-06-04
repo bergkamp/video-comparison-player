@@ -238,7 +238,9 @@ export default {
             
         },
         replay() {
-            this.play(false)
+            this.leftPlayer.currentTime = 0;
+            this.rightPlayer.currentTime = 0;
+            this.play(false);
         },
         pause() {
             
