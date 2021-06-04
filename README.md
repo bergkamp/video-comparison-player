@@ -38,3 +38,5 @@ https://github.com/SavageCore/node-ffprobe-installer#readme
 ffprobe 安装问题  https://stackoverflow.com/questions/41292559/could-not-find-a-declaration-file-for-module-module-name-path-to-module-nam
 
 进程间通信 https://juejin.cn/post/6844903873237221384 
+
+定制关于面板 https://stackoverflow.com/questions/54170269/electron-and-macos-how-to-customize-the-about-app-display-panel-that-pops-u
