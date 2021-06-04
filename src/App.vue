@@ -375,6 +375,13 @@ export default {
 </script>
 
 <style>
+
+@media (prefers-color-scheme: dark) {
+  body{ background:  #333;}
+}
+@media (prefers-color-scheme: light) {
+  body{ background: white;}
+}
 .app {
     font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
         "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
