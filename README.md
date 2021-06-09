@@ -1,7 +1,16 @@
-# video-comparison-player
-[Electron](https://www.electronjs.org/docs/tutorial/quick-start)
-[Vue](https://cn.vuejs.org/v2/guide/)
-[ElementUI](https://element.eleme.cn/#/zh-CN)
+# Video Comparison Player 视频对比播放器
+![video-comparison](https://user-images.githubusercontent.com/36283/121299328-d3d82f00-c927-11eb-9ff8-7009ee6f566e.gif)
+
+[下载最新版](https://github.com/bergkamp/video-comparison-player/releases/tag/v0.2.1)
+
+功能说明
+* 支持windows与mac
+* 可以分开或一次性选择两个视频
+* 支持暗黑模式
+* 支持快捷键
+  * `左右方向`控制分割线
+  * `上方向`控制方向键回中
+  * `空格`控制播放暂停
 
 ## 环境设置
 node & npm https://nodejs.org/en/download/
