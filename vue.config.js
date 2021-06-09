@@ -1,12 +1,11 @@
 module.exports = {
   configureWebpack: {
     devtool: 'source-map',
-    node: {
-      __dirname: false,
-    },
   },
   pluginOptions: {
     electronBuilder: {
+      nodeIntegration: true,
+      contextIsolation: false,
       builderOptions: {
         mac: {
           icon: './src/icon/icon.icns'

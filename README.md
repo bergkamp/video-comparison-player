@@ -42,7 +42,7 @@ https://itnext.io/electron-application-with-vue-js-and-vuetify-f2a1f9c749b8
 
 https://element.eleme.cn/#/zh-CN/component/installation
 
-https://github.com/SavageCore/node-ffprobe-installer#readme
+https://pietropassarelli.com/ffmpeg-electron.html
 
 ffprobe 安装问题  https://stackoverflow.com/questions/41292559/could-not-find-a-declaration-file-for-module-module-name-path-to-module-nam
 

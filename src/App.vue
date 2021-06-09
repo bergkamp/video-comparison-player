@@ -117,11 +117,9 @@
 </template>
 
 <script>
-// https://www.w3schools.com/howto/howto_js_image_comparison.asp
-//const ffprobe = require("@ffprobe-installer/ffprobe");
-//const os = require('os');
-//import Ffprobe from "./components/Ffprobe";
-//const ffprobe = require('electron').remote.getGlobal('ffprobe');
+const electron = require("electron");
+const pathToFfmpeg = electron.remote.require('ffmpeg-static');
+
 export default {
     name: "App",
     data() {
@@ -154,6 +152,8 @@ export default {
     mounted() {
         this.leftPlayer = this.$refs.leftPlayer;
         this.rightPlayer = this.$refs.rightPlayer;
+        console.log(pathToFfmpeg);
+        console.log(__dirname);
         
         // window.addEventListener("keydown", e => {
         //     this.moveLineByKey(e);

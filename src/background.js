@@ -7,6 +7,10 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 
 //import { videoSupport } from './components/Ffprobe';
 
+var pathToFfmpeg = require('ffmpeg-static');
+console.log(pathToFfmpeg);
+console.log(__dirname);
+
 //菜单
 let template = [
   {
@@ -44,6 +48,7 @@ async function createWindow() {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       //nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+      nodeIntegration: true,
       contextIsolation: false
     }
   })
