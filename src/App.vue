@@ -113,12 +113,21 @@
                 <div class="video-title small">&nbsp;{{ rightTitle }}</div>
             </el-col>
         </el-row>
+        <el-row :gutter="5">
+            <el-col :span="12">
+                <div class="video-title small">{{ leftProbe }}</div>
+            </el-col>
+            <el-col :span="12">
+                <div class="video-title small">{{ rightProbe }}</div>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
 <script>
 const electron = require("electron");
 const pathToFfmpeg = electron.remote.require('ffmpeg-static');
+import ffmpeg from "./components/Ffmpeg";
 
 export default {
     name: "App",
@@ -126,6 +135,8 @@ export default {
         return {
             leftTitle: " ",
             rightTitle: " ",
+            leftProbe: " ",
+            rightProbe: " ",
             leftPlayer: null,
             rightPlayer: null,
             currPlayer: "left", //left|right
@@ -176,10 +187,13 @@ export default {
                 console.log(element);
                 if (this.currPlayer == "left") {
                     this.leftTitle = element.name;
+                    this.leftProbe = ffmpeg(element.raw.path);
+                    console.log("leftprobe",this.leftProbe);
                     this.loadPlay(element, this.leftPlayer);
                     this.currPlayer = "right";
                 } else {
                     this.rightTitle = element.name;
+                    this.rightProbe = ffmpeg(element.raw.path);
                     this.loadPlay(element, this.rightPlayer);
                     this.currPlayer = "left";
                 }

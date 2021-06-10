@@ -1,8 +1,16 @@
+const webpack = require('webpack');
+
 module.exports = {
   configureWebpack: {
     devtool: 'source-map',
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env.FLUENTFFMPEG_COV': false
+      })
+    ]
   },
   pluginOptions: {
+
     electronBuilder: {
       nodeIntegration: true,
       contextIsolation: false,

@@ -17,6 +17,8 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.15.1",
     "ffmpeg-static": "^4.3.0",
+    "ffprobe-static-electron": "^2.0.0",
+    "fluent-ffmpeg": "^2.1.2",
     "img-comparison-slider": "^3.0.4",
     "install": "^0.13.0",
     "npm": "^7.15.0",
