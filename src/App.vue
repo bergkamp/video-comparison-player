@@ -115,18 +115,36 @@
         </el-row>
         <el-row :gutter="5">
             <el-col :span="12">
-                <div class="video-title small">{{ leftProbe }}</div>
+                <div class="video-title small">
+                    <json-viewer
+                    :value="leftProbe"
+                    :expand-depth=1
+                    :theme='jvTheme'
+                    boxed
+                    sort></json-viewer>
+                    </div>
             </el-col>
             <el-col :span="12">
-                <div class="video-title small">{{ rightProbe }}</div>
+                <div class="video-title small">
+                    <div class="video-title small">
+                    <json-viewer
+                    :value="rightProbe"
+                    :expand-depth=1
+                    :theme='jvTheme'
+                    boxed
+                    sort></json-viewer>
+                    </div>
+                </div>
             </el-col>
         </el-row>
     </div>
 </template>
 
 <script>
-const electron = require("electron");
-const pathToFfmpeg = electron.remote.require('ffmpeg-static');
+import JsonViewer from 'vue-json-viewer'
+//fluent-ffmpeg是针对ffmpeg命令的封装 https://github.com/fluent-ffmpeg/node-fluent-ffmpeg#readme
+const fluentFfmpeg = require('fluent-ffmpeg');
+
 import ffmpeg from "./components/Ffmpeg";
 
 export default {
@@ -154,24 +172,27 @@ export default {
                 status:false,//true表示播放中，false表示暂停中
                 text:'播放',
                 icon:'el-icon-video-play'
-            }
+            },
+            jvTheme: 'jv-light'
         };
     },
     components: {
-        //Files
+        JsonViewer
     },
     mounted() {
         this.leftPlayer = this.$refs.leftPlayer;
         this.rightPlayer = this.$refs.rightPlayer;
-        console.log(pathToFfmpeg);
-        console.log(__dirname);
-        
-        // window.addEventListener("keydown", e => {
-        //     this.moveLineByKey(e);
-        // });
-        //console.log(os.platform);
-        //console.log(Ffprobe);
-        //console.log(ffprobe.path, ffprobe.version);
+
+        //初始化二进制文件的路经
+        //fluentFfmpeg.setFfmpegPath(ffmpeg.ffmpegPath);
+        fluentFfmpeg.setFfprobePath(ffmpeg.ffprobePath);
+
+        console.log(ffmpeg);
+
+        //Dark mode
+        if(window.matchMedia("prefers-color-scheme: dark")){
+            this.jvTheme = 'jv-dark';
+        }
     },
     methods: {
         handleChange(file, fileList) {
@@ -185,15 +206,24 @@ export default {
             fileList.forEach((element) => {
                 if (count > 1) return; //最多一次处理2个文件
                 console.log(element);
+                var that = this;
                 if (this.currPlayer == "left") {
                     this.leftTitle = element.name;
-                    this.leftProbe = ffmpeg(element.raw.path);
-                    console.log("leftprobe",this.leftProbe);
+                    
+                    fluentFfmpeg.ffprobe(element.raw.path, function(err, metadata) {
+                        console.log("==metadata==",metadata);
+                        //console.log("leftprobe",this.leftProbe);
+                        that.leftProbe = metadata
+                    });
+                    //this.leftProbe = fluentFfmpeg.ffprobe(element.raw.path);
+
                     this.loadPlay(element, this.leftPlayer);
                     this.currPlayer = "right";
                 } else {
                     this.rightTitle = element.name;
-                    this.rightProbe = ffmpeg(element.raw.path);
+                    fluentFfmpeg.ffprobe(element.raw.path, function(err, metadata) {
+                        that.rightProbe = metadata;
+                    });
                     this.loadPlay(element, this.rightPlayer);
                     this.currPlayer = "left";
                 }

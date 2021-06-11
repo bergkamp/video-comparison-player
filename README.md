@@ -14,6 +14,8 @@
 
 ## 环境设置
 node & npm https://nodejs.org/en/download/
+node v14.16.0
+npm 6.14.11
 
 设置npm源
 ```bash

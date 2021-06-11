@@ -1,3 +1,4 @@
+//https://www.electron.build/configuration/configuration
 const webpack = require('webpack');
 
 module.exports = {
@@ -16,7 +17,7 @@ module.exports = {
       contextIsolation: false,
       builderOptions: {
         mac: {
-          icon: './src/icon/icon.icns'
+          icon: './src/icon/icon.icns',
         },
         win: {
           icon: './src/icon/icon.png',
@@ -26,7 +27,14 @@ module.exports = {
           oneClick: false,
           allowToChangeInstallationDirectory: true,
           createDesktopShortcut: true
-        }
+        },
+        extraFiles: [
+          
+          {
+            from: "node_modules/ffprobe-static-electron/bin/${os}/${arch}",
+            to: "static"
+          }
+        ]
       }
     }
   }

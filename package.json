@@ -22,7 +22,8 @@
     "img-comparison-slider": "^3.0.4",
     "install": "^0.13.0",
     "npm": "^7.15.0",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-json-viewer": "^2.2.19"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
