@@ -1,28 +1,28 @@
 {
   "name": "video-comparison-player",
-  "version": "0.2.1",
+  "version": "0.3.0",
+  "author": "Ruoshi",
   "description": "Video comparison player",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
+    "build": "vue-cli-service electron:build",
+    "dev": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
   "dependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.1",
+    "ffmpeg-static": "^4.3.0",
     "ffprobe-static-electron": "^2.0.0",
     "fluent-ffmpeg": "^2.1.2",
     "img-comparison-slider": "^3.0.4",
     "install": "^0.13.0",
     "npm": "^7.15.0",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-json-pretty": "^1.8.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -30,10 +30,11 @@
     "@vue/cli-service": "^4.5.13",
     "babel-eslint": "^10.1.0",
     "electron": "^11.0.0",
+    "electron-builder": "^22.10.5",
     "electron-devtools-installer": "^3.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-cli-plugin-electron-builder": "~2.0.0-rc.6",
+    "vue-cli-plugin-electron-builder": "^2.0.0",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {

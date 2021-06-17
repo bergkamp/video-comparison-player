@@ -1,16 +1,29 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, Menu } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 //import { videoSupport } from './components/Ffprobe';
 
-//关闭菜单
-const electron = require('electron')
-const Menu = electron.Menu
-Menu.setApplicationMenu(null)
+//菜单
+let template = [
+  {
+    label:app.name,
+    submenu: [
+      { label: 'About '+ app.name, role: 'about' },
+      { type: 'separator' },
+      { role: 'services' },
+      { type: 'separator' },
+      { role: 'hide' },
+      { role: 'hideothers' },
+      { role: 'unhide' },
+      { type: 'separator' },
+      { role: 'quit' }
+    ]
+  }
+]
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -31,9 +44,14 @@ async function createWindow() {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       //nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
-      contextIsolation: false
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
     }
   })
+
+  //打包debug
+  //win.webContents.openDevTools();
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -74,7 +92,8 @@ app.on('ready', async () => {
     }
   }
   createWindow()
-  Menu.setApplicationMenu(null);
+  let menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu);
 })
 
 // Exit cleanly on request from parent process in development mode.
