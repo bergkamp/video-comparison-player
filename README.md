@@ -28,14 +28,12 @@ npm install
 ```
 ### 开发环境运行
 ```bash
-#浏览器调试
-npm serve
 #客户端调试
-npm run electron:serve
+npm run dev
 ```
 ### 打包
 ```bash
-npm run electron:build
+npm run build
 ```
 
 

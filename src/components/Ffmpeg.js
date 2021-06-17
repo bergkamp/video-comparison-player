@@ -18,7 +18,8 @@ if (platform === 'mac' && arch !== 'x64') {
 
 //bin文件目录，开发环境是node_modules
 const isDevelopment = process.env.NODE_ENV === 'development';
-var baseDir = isDevelopment ? 'node_modules/' : __dirname.replace(/Resources\/electron\.asar$/, 'static');
+//const isDevelopment = false;
+var baseDir = isDevelopment ? 'node_modules/' : __dirname.replace(/Resources\/app\.asar\/renderer$/, 'static');
 //ffprobe
 var ffprobePath = isDevelopment ?
     path.join(
