@@ -117,12 +117,12 @@
             <el-col :span="12">
                     
                 <div class="video-title small" v-show="leftContent.show">
-                    <vue-json-pretty :data="leftContent.probe" :deep="0" > </vue-json-pretty>
+                    <vue-json-pretty :data="leftContent.probe" :show-length="true" :deep="0" > </vue-json-pretty>
                 </div>
             </el-col>
             <el-col :span="12">
                     <div class="video-title small" v-show="rightContent.show">
-                        <vue-json-pretty :data="rightContent.probe" :deep="0" > </vue-json-pretty>
+                        <vue-json-pretty :data="rightContent.probe" :show-length="true" :deep="0" > </vue-json-pretty>
                     </div>
             </el-col>
         </el-row>
@@ -214,7 +214,7 @@ export default {
                     this.loadPlay(element, this.leftPlayer);
                     this.currPlayer = "right";
                 } else {
-                    this.leftContent.show = true;
+                    this.rightContent.show = true;
                     this.rightContent.title = element.name;
                     fluentFfmpeg.ffprobe(element.raw.path, function(err, metadata) {
                         that.rightContent.probe = metadata;
