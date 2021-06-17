@@ -107,50 +107,49 @@
         </el-row>
         <el-row :gutter="5">
             <el-col :span="12">
-                <div class="video-title small">&nbsp;{{ leftTitle }}</div>
+                <div class="video-title small">&nbsp;{{ leftContent.title }}</div>
             </el-col>
             <el-col :span="12">
-                <div class="video-title small">&nbsp;{{ rightTitle }}</div>
+                <div class="video-title small">&nbsp;{{ rightContent.title }}</div>
             </el-col>
         </el-row>
         <el-row :gutter="5">
             <el-col :span="12">
-                <div class="video-title small">
-                    <json-viewer
-                    :value="leftProbe"
-                    :expand-depth=1
-                    :theme='jvTheme'
-                    boxed
-                    sort></json-viewer>
-                    </div>
+                    
+                <div class="video-title small" v-show="leftContent.show">
+                    <vue-json-pretty :data="leftContent.probe" :deep="0" > </vue-json-pretty>
+                </div>
             </el-col>
             <el-col :span="12">
-                <div class="video-title small">
-                    <div class="video-title small">
-                    <json-viewer
-                    :value="rightProbe"
-                    :expand-depth=1
-                    :theme='jvTheme'
-                    boxed
-                    sort></json-viewer>
+                    <div class="video-title small" v-show="rightContent.show">
+                        <vue-json-pretty :data="rightContent.probe" :deep="0" > </vue-json-pretty>
                     </div>
-                </div>
             </el-col>
         </el-row>
     </div>
 </template>
 
 <script>
-import JsonViewer from 'vue-json-viewer'
 //fluent-ffmpeg是针对ffmpeg命令的封装 https://github.com/fluent-ffmpeg/node-fluent-ffmpeg#readme
 const fluentFfmpeg = require('fluent-ffmpeg');
-
 import ffmpeg from "./components/Ffmpeg";
+import VueJsonPretty from 'vue-json-pretty';
+import 'vue-json-pretty/lib/styles.css';
 
 export default {
     name: "App",
     data() {
         return {
+            leftContent: {
+                show:false,
+                title:" ",
+                probe:" "
+            },
+            rightContent: {
+                show:false,
+                title:" ",
+                probe:" "
+            },
             leftTitle: " ",
             rightTitle: " ",
             leftProbe: " ",
@@ -173,11 +172,10 @@ export default {
                 text:'播放',
                 icon:'el-icon-video-play'
             },
-            jvTheme: 'jv-light'
         };
     },
     components: {
-        JsonViewer
+        VueJsonPretty
     },
     mounted() {
         this.leftPlayer = this.$refs.leftPlayer;
@@ -188,11 +186,6 @@ export default {
         fluentFfmpeg.setFfprobePath(ffmpeg.ffprobePath);
 
         console.log(ffmpeg);
-
-        //Dark mode
-        if(window.matchMedia("prefers-color-scheme: dark")){
-            this.jvTheme = 'jv-dark';
-        }
     },
     methods: {
         handleChange(file, fileList) {
@@ -208,21 +201,23 @@ export default {
                 console.log(element);
                 var that = this;
                 if (this.currPlayer == "left") {
-                    this.leftTitle = element.name;
+                    this.leftContent.show = true;
+                    this.leftContent.title = element.name;
                     
                     fluentFfmpeg.ffprobe(element.raw.path, function(err, metadata) {
                         console.log("==metadata==",metadata);
                         //console.log("leftprobe",this.leftProbe);
-                        that.leftProbe = metadata
+                        that.leftContent.probe = metadata
                     });
                     //this.leftProbe = fluentFfmpeg.ffprobe(element.raw.path);
 
                     this.loadPlay(element, this.leftPlayer);
                     this.currPlayer = "right";
                 } else {
-                    this.rightTitle = element.name;
+                    this.leftContent.show = true;
+                    this.rightContent.title = element.name;
                     fluentFfmpeg.ffprobe(element.raw.path, function(err, metadata) {
-                        that.rightProbe = metadata;
+                        that.rightContent.probe = metadata;
                     });
                     this.loadPlay(element, this.rightPlayer);
                     this.currPlayer = "left";
