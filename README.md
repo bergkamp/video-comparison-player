@@ -1,7 +1,8 @@
 # Video Comparison Player 视频对比播放器
-![video-comparison](https://user-images.githubusercontent.com/36283/121299328-d3d82f00-c927-11eb-9ff8-7009ee6f566e.gif)
 
-[下载最新版](https://github.com/bergkamp/video-comparison-player/releases/tag/v0.2.1)
+![output](https://user-images.githubusercontent.com/36283/122520417-26130180-d046-11eb-96d2-f9448f7e3924.gif)
+
+[下载最新版](https://github.com/bergkamp/video-comparison-player/releases/latest)
 
 功能说明
 * 支持windows与mac
