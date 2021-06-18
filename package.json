@@ -1,7 +1,7 @@
 {
   "name": "video-comparison-player",
   "version": "0.3.1",
-  "author": "Ruoshi",
+  "author": "Zhang Ruoshi",
   "description": "Video comparison player",
   "private": true,
   "scripts": {
