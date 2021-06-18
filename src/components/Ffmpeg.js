@@ -25,9 +25,9 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 //打包后的应用根目录
 var prodRoot = null;
 if(platform === 'win'){
-    prodRoot = path.join(__dirname, '..', '../');
+    prodRoot = path.join(__dirname, '../../');
 }else{
-    prodRoot = path.join(__dirname, '..', '../../');
+    prodRoot = path.join(__dirname, '../../');
 }
 
 //var baseDir = isDevelopment ? 'node_modules/' : __dirname.replace(/resources\/app\.asar$/, 'static');
