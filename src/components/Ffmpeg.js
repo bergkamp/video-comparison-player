@@ -22,16 +22,8 @@ console.log('dirname=====',__dirname);
 //bin文件目录，开发环境是node_modules
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-//打包后的应用根目录
-var prodRoot = null;
-if(platform === 'win'){
-    prodRoot = path.join(__dirname, '../../');
-}else{
-    prodRoot = path.join(__dirname, '../../');
-}
-
 //var baseDir = isDevelopment ? 'node_modules/' : __dirname.replace(/resources\/app\.asar$/, 'static');
-var baseDir = isDevelopment ? 'node_modules/' : prodRoot + '/static';
+var baseDir = isDevelopment ? 'node_modules/' : path.join(__dirname, '../../static');
 
 //ffprobe
 var ffprobePath = isDevelopment ?
