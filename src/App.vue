@@ -17,7 +17,7 @@
                         size="small"
                         type="primary"
                         icon="el-icon-document-add"
-                        >选取视频文件</el-button
+                        >选取视频或图片</el-button
                     >
                 </el-upload>
             </el-col>
@@ -25,7 +25,7 @@
                 <div style="text-align: center">
                     <el-button-group>
                         <el-button
-                            :disabled="disabledBtn"
+                            :disabled="playBtnDisabled"
                             size="small"
                             type="primary"
                             icon="el-icon-refresh"
@@ -33,7 +33,7 @@
                             >重播</el-button
                         >
                         <el-button
-                            :disabled="disabledBtn"
+                            :disabled="playBtnDisabled"
                             size="small"
                             type="primary"
                             :icon="doublePlay.icon"
@@ -50,10 +50,10 @@
                         size="small"
                         @change="overlap"
                     >
-                        <el-radio-button label="0" :disabled="disabledBtn"
+                        <el-radio-button label="0" :disabled="overlapBtnDisabled"
                             >分离</el-radio-button
                         >
-                        <el-radio-button label="1" :disabled="disabledBtn"
+                        <el-radio-button label="1" :disabled="overlapBtnDisabled"
                             >重叠</el-radio-button
                         >
                     </el-radio-group>
@@ -69,8 +69,8 @@
                         :style="{ width: playerWidth }"
                     >
                         <video
+                        v-show="leftView.isVideo===true"
                             ref="leftPlayer"
-                            id="leftPlayer"
                             class="video-player"
                             controls="true"
                             autoplay="false"
@@ -78,6 +78,11 @@
                         >
                             <source src="" type="" />
                         </video>
+                         <img
+                         v-show="leftView.isVideo===false"
+                         ref="leftImage"
+                         class="image-player"
+                         src=""/>
                     </div>
                     <div
                         class="img-comp-line"
@@ -92,8 +97,8 @@
                         :style="{ width: playerWidth }"
                     >
                         <video
+                            v-show="rightView.isVideo===true"
                             ref="rightPlayer"
-                            id="rightPlayer"
                             class="video-player"
                             controls="true"
                             autoplay="false"
@@ -101,6 +106,11 @@
                         >
                             <source src="" type="" />
                         </video>
+                        <img
+                         v-show="rightView.isVideo===false"
+                         ref="rightImage"
+                         class="image-player"
+                         src="" />
                     </div>
                 </div>
             </el-col>
@@ -150,15 +160,18 @@ export default {
                 title:" ",
                 probe:" "
             },
-            leftTitle: " ",
-            rightTitle: " ",
-            leftProbe: " ",
-            rightProbe: " ",
-            leftPlayer: null,
-            rightPlayer: null,
+            leftView:{
+                isVideo: true,//video true,image false
+                player:null,
+            },
+            rightView:{
+                isVideo: true,
+                player:null,
+            },
             currPlayer: "left", //left|right
             fileList: [],
-            disabledBtn: true,
+            playBtnDisabled: true,
+            overlapBtnDisabled: true,
             overlapRadio: 0,
             playerWidth: "50%",
             clipPath: "clip-path:inset(0px 0px 0px 0px)",
@@ -178,18 +191,15 @@ export default {
         VueJsonPretty
     },
     mounted() {
-        this.leftPlayer = this.$refs.leftPlayer;
-        this.rightPlayer = this.$refs.rightPlayer;
+        this.leftView.player = this.$refs.leftPlayer;
+        this.rightView.player = this.$refs.rightPlayer;
 
         //初始化二进制文件的路经
-        //fluentFfmpeg.setFfmpegPath(ffmpeg.ffmpegPath);
         fluentFfmpeg.setFfprobePath(ffmpeg.ffprobePath);
-
-        console.log(ffmpeg);
     },
     methods: {
         handleChange(file, fileList) {
-            console.log("===", fileList.length);
+            console.log("===file===", file);
 
             //如果一次选择两个视频，则leftplayer开始loading
             if (fileList.length == 2) {
@@ -199,6 +209,12 @@ export default {
             fileList.forEach((element) => {
                 if (count > 1) return; //最多一次处理2个文件
                 console.log(element);
+                
+                //类型检查,如image/jpeg
+                let fileTypes = element.raw.type.split('/');
+                let isVideo = fileTypes[0] == 'video' ? true : false;
+                console.log(fileTypes);
+                
                 var that = this;
                 if (this.currPlayer == "left") {
                     this.leftContent.show = true;
@@ -210,8 +226,15 @@ export default {
                         that.leftContent.probe = metadata
                     });
                     //this.leftProbe = fluentFfmpeg.ffprobe(element.raw.path);
+                    this.leftView.isVideo = isVideo;
 
-                    this.loadPlay(element, this.leftPlayer);
+                    if(isVideo){
+                        this.leftView.player = this.$refs.leftPlayer; 
+                    }else{
+                        this.leftView.player = this.$refs.leftImage;
+                    }
+                                       
+                    this.loadPlay(element, this.leftView.player);
                     this.currPlayer = "right";
                 } else {
                     this.rightContent.show = true;
@@ -219,23 +242,40 @@ export default {
                     fluentFfmpeg.ffprobe(element.raw.path, function(err, metadata) {
                         that.rightContent.probe = metadata;
                     });
-                    this.loadPlay(element, this.rightPlayer);
+                    this.rightView.isVideo = isVideo;
+                    if(isVideo){
+                        this.rightView.player = this.$refs.rightPlayer;
+                    }else{
+                        this.rightView.player = this.$refs.rightImage;
+                    }
+                    
+                    this.loadPlay(element, this.rightView.player);
                     this.currPlayer = "left";
                 }
                 console.log(this.currPlayer, element.name);
                 count++;
             });
+            
+            //分离按钮
+            if (this.leftView.player.src != "" && this.rightView.player.src != "") {
+                this.overlapBtnDisabled = false;
+            }
+
             //播放按钮
-            if (this.leftPlayer.src != "" && this.rightPlayer.src != "") {
-                this.replayBtn = false;
-                this.disabledBtn = false;
+            if (this.leftView.isVideo && this.rightView.isVideo){
+                this.playBtnDisabled = false;
             }
             this.fileList = [];
         },
         loadPlay(file, player) {
             var fileURL = URL.createObjectURL(file.raw);
+            console.log("==fileUrl==",fileURL);
             player.src = fileURL;
-            player.pause();
+            console.log("==player===",player);
+            if(player.isVideo){
+                player.pause();
+            }
+            
             // var playPromise = player.play();
 
             // //解决这个报错https://www.jackpu.com/jie-jue-xin-ban-ben-chrome-ti-shi-domexception-the-play-request-was-interrupted/
@@ -262,23 +302,23 @@ export default {
                 this.doublePlay.text = "暂停";
                 this.doublePlay.icon = "el-icon-video-pause";
                 
-                this.leftPlayer.play();
-                this.rightPlayer.play();
+                this.leftView.player.play();
+                this.rightView.player.play();
             }else{
                 this.doublePlay.status = false;
                 this.doublePlay.text = "播放";
                 this.doublePlay.icon = "el-icon-video-play";
                 
-                this.leftPlayer.pause();
-                this.rightPlayer.pause();
+                this.leftView.player.pause();
+                this.rightView.player.pause();
             }
             console.log(this.doublePlay)
 
             
         },
         replay() {
-            this.leftPlayer.currentTime = 0;
-            this.rightPlayer.currentTime = 0;
+            this.leftView.player.currentTime = 0;
+            this.rightView.player.currentTime = 0;
             this.play(false);
         },
         pause() {
@@ -289,16 +329,16 @@ export default {
             if (this.overlapRadio == 1) {
                 //重叠
                 this.playerWidth = "100%";
-                this.leftPlayer.controls = false;
-                this.rightPlayer.controls = false;
-                this.leftPlayer.style.clipPath = "inset(0px 50% 0px 0px)";
+                this.leftView.player.controls = false;
+                this.rightView.player.controls = false;
+                this.leftView.player.style.clipPath = "inset(0px 50% 0px 0px)";
                 this.overlapBtnHandle(true);
             } else {
                 //分离
                 this.playerWidth = "50%";
-                this.leftPlayer.controls = true;
-                this.leftPlayer.style.clipPath = "inset(0px 0px 0px 0px)";
-                this.rightPlayer.controls = true;
+                this.leftView.player.controls = true;
+                this.leftView.player.style.clipPath = "inset(0px 0px 0px 0px)";
+                this.rightView.player.controls = true;
                 this.overlapBtnHandle(false);
             }
             //清除掉按钮组的focus，否则方向键会变成重叠/分离按钮的切换
@@ -362,7 +402,7 @@ export default {
             this.overlapLine.style.left = pos + "px";
             pos = pos + 1;
             pos = videoBoxWidth - pos;
-            this.leftPlayer.style.clipPath = "inset(0px " + pos + "px 0px 0px )";
+            this.leftView.player.style.clipPath = "inset(0px " + pos + "px 0px 0px )";            
         },
         getCursorPos(e) {
             var a,
@@ -460,6 +500,9 @@ export default {
 .video-player {
     width: 100%;
 }
+.image-player{
+    width: 100%;
+}
 .video-title {
     margin-bottom: 5px;
     overflow: hidden;
@@ -476,11 +519,13 @@ export default {
     z-index: 9;
     overflow: hidden;
     object-fit: contain;
+    /* background: url(./assets/video.svg) center center no-repeat; */
 }
 #rightDiv {
     width: 100%;
     float: right;
     object-fit: contain;
+    /* background: url(./assets/video.svg) center center no-repeat; */
 }
 #videoDiv {
     display: flex;
@@ -509,8 +554,8 @@ video {
     object-fit: contain;
 }
 .video-box {
-    /* width:800px;
-  height:600px; */
+    /* width:800px;*/
+  /* height:600px;  */
     object-fit: contain;
 }
 .outline-none{
