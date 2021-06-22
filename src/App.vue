@@ -419,6 +419,7 @@ export default {
         
         //键盘快捷方式
         keyAlias(e){
+            e.preventDefault();
             this.$refs.topDiv.focus();
             if(this.disabledBtn == true) return;
             
@@ -448,6 +449,7 @@ export default {
             }
 
             if(e.code == 'Space'){//播放暂停
+                
                 this.play();
             }
         }
