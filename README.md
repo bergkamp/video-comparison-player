@@ -1,10 +1,5 @@
 # Video Comparison Player 视频对比播放器
-
-![output](https://user-images.githubusercontent.com/36283/122520417-26130180-d046-11eb-96d2-f9448f7e3924.gif)
-
-[下载最新版](https://github.com/bergkamp/video-comparison-player/releases/latest)
-
-功能说明
+Video Comparison Play 是为视频增强、视频修复开发者提供的对比播放工具，包括以下功能：
 * 支持windows与mac
 * 支持两个视频或图片左右同步对比播放
 * 支持暗黑模式
@@ -13,6 +8,10 @@
   * `上方向`控制方向键回中
   * `空格`控制播放暂停
 * 支持ffprobe读取视频文件参数
+
+![output](https://user-images.githubusercontent.com/36283/122520417-26130180-d046-11eb-96d2-f9448f7e3924.gif)
+
+[下载最新版](https://github.com/bergkamp/video-comparison-player/releases/latest)
 
 ## 环境设置
 node & npm https://nodejs.org/en/download/
