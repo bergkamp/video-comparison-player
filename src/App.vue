@@ -57,6 +57,7 @@
                             >重叠</el-radio-button
                         >
                     </el-radio-group>
+                    <el-button style="margin-left:8px;" type="info" size="small" icon="el-icon-info" @click="help()"></el-button>
                 </div>
             </el-col>
         </el-row>
@@ -142,6 +143,8 @@
 <script>
 //fluent-ffmpeg是针对ffmpeg命令的封装 https://github.com/fluent-ffmpeg/node-fluent-ffmpeg#readme
 const fluentFfmpeg = require('fluent-ffmpeg');
+const shell = require('electron').shell;
+
 import ffmpeg from "./components/Ffmpeg";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
@@ -452,6 +455,9 @@ export default {
                 
                 this.play();
             }
+        },
+        help(){
+            shell.openExternal("https://github.com/bergkamp/video-comparison-player#readme");
         }
     },
 };
