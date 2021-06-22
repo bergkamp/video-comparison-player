@@ -69,7 +69,7 @@
                         :style="{ width: playerWidth }"
                     >
                         <video
-                        v-if="leftView.isVideo===true"
+                        v-show="leftView.isVideo===true"
                             ref="leftPlayer"
                             class="video-player"
                             controls="true"
@@ -79,8 +79,8 @@
                             <source src="" type="" />
                         </video>
                          <img
-                         v-else
-                         ref="leftPlayer"
+                         v-show="leftView.isVideo===false"
+                         ref="leftImage"
                          class="image-player"
                          src=""/>
                     </div>
@@ -97,9 +97,8 @@
                         :style="{ width: playerWidth }"
                     >
                         <video
-                            v-if="rightView.isVideo === true"
+                            v-show="rightView.isVideo===true"
                             ref="rightPlayer"
-                            id="rightPlayer"
                             class="video-player"
                             controls="true"
                             autoplay="false"
@@ -108,9 +107,8 @@
                             <source src="" type="" />
                         </video>
                         <img
-                         v-else
-                         ref="rightPlayer"
-                         id="rightPlayer"
+                         v-show="rightView.isVideo===false"
+                         ref="rightImage"
                          class="image-player"
                          src="" />
                     </div>
@@ -163,11 +161,11 @@ export default {
                 probe:" "
             },
             leftView:{
-                isVideo: false,//video true,image false
+                isVideo: true,//video true,image false
                 player:null,
             },
             rightView:{
-                isVideo: false,
+                isVideo: true,
                 player:null,
             },
             currPlayer: "left", //left|right
@@ -229,7 +227,13 @@ export default {
                     });
                     //this.leftProbe = fluentFfmpeg.ffprobe(element.raw.path);
                     this.leftView.isVideo = isVideo;
-                    this.leftView.player = this.$refs.leftPlayer;                    
+
+                    if(isVideo){
+                        this.leftView.player = this.$refs.leftPlayer; 
+                    }else{
+                        this.leftView.player = this.$refs.leftImage;
+                    }
+                                       
                     this.loadPlay(element, this.leftView.player);
                     this.currPlayer = "right";
                 } else {
@@ -239,7 +243,12 @@ export default {
                         that.rightContent.probe = metadata;
                     });
                     this.rightView.isVideo = isVideo;
-                    this.rightView.player = this.$refs.rightPlayer;
+                    if(isVideo){
+                        this.rightView.player = this.$refs.rightPlayer;
+                    }else{
+                        this.rightView.player = this.$refs.rightImage;
+                    }
+                    
                     this.loadPlay(element, this.rightView.player);
                     this.currPlayer = "left";
                 }
