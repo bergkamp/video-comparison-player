@@ -22,6 +22,7 @@
     "install": "^0.13.0",
     "npm": "^7.15.0",
     "vue": "^2.6.11",
+    "vue-i18n": "^8.24.5",
     "vue-json-pretty": "^1.8.0"
   },
   "devDependencies": {
