@@ -1,5 +1,5 @@
-<template class="app">
-    <div tabindex="1" ref="topDiv" @keydown="keyAlias($event)" style="outline:none">
+<template class="app"  >
+    <div tabindex="1" ref="topDiv"  @keydown="keyAlias($event)" style="outline:none">
         <el-row>
             <el-col :span="8">
                 <el-upload
@@ -17,11 +17,11 @@
                         size="small"
                         type="primary"
                         icon="el-icon-document-add"
-                        >选取视频或图片</el-button
+                        >{{$t("OpenFile")}}</el-button
                     >
                 </el-upload>
             </el-col>
-            <el-col :span="8" type="flex" justify="center">
+            <el-col :span="8" type="flex" justify="center" >
                 <div style="text-align: center">
                     <el-button-group>
                         <el-button
@@ -30,10 +30,11 @@
                             type="primary"
                             icon="el-icon-refresh"
                             @click="replay"
-                            >重播</el-button
+                            >{{$t("Replay")}}</el-button
                         >
                         <el-button
                             :disabled="playBtnDisabled"
+                            ref="playBtn"
                             size="small"
                             type="primary"
                             :icon="doublePlay.icon"
@@ -51,12 +52,13 @@
                         @change="overlap"
                     >
                         <el-radio-button label="0" :disabled="overlapBtnDisabled"
-                            >分离</el-radio-button
+                            >{{$t("Split")}}</el-radio-button
                         >
                         <el-radio-button label="1" :disabled="overlapBtnDisabled"
-                            >重叠</el-radio-button
+                            >{{$t("Overlap")}}</el-radio-button
                         >
                     </el-radio-group>
+                    <el-button style="margin-left:8px;min-width:40px;" type="info" size="small" icon="el-icon-info" @click="help()"></el-button>
                 </div>
             </el-col>
         </el-row>
@@ -142,6 +144,8 @@
 <script>
 //fluent-ffmpeg是针对ffmpeg命令的封装 https://github.com/fluent-ffmpeg/node-fluent-ffmpeg#readme
 const fluentFfmpeg = require('fluent-ffmpeg');
+const shell = require('electron').shell;
+
 import ffmpeg from "./components/Ffmpeg";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
@@ -182,10 +186,13 @@ export default {
             overlapBtnClicked: false,
             doublePlay:{
                 status:false,//true表示播放中，false表示暂停中
-                text:'播放',
+                text: this.$t("Play"),
                 icon:'el-icon-video-play'
             },
         };
+    },
+    created(){
+        document.title = this.$t("AppName");
     },
     components: {
         VueJsonPretty
@@ -299,14 +306,14 @@ export default {
             
             if(nowStatus == false){
                 this.doublePlay.status = true;
-                this.doublePlay.text = "暂停";
+                this.doublePlay.text = this.$t("Pause");
                 this.doublePlay.icon = "el-icon-video-pause";
                 
                 this.leftView.player.play();
                 this.rightView.player.play();
             }else{
                 this.doublePlay.status = false;
-                this.doublePlay.text = "播放";
+                this.doublePlay.text = this.$t("Play");
                 this.doublePlay.icon = "el-icon-video-play";
                 
                 this.leftView.player.pause();
@@ -341,8 +348,7 @@ export default {
                 this.rightView.player.controls = true;
                 this.overlapBtnHandle(false);
             }
-            //清除掉按钮组的focus，否则方向键会变成重叠/分离按钮的切换
-            this.$refs.topDiv.focus();
+            event.preventDefault();
         },
         overlapBtnHandle(show) {
             if (this.videoBox == null) {
@@ -420,7 +426,7 @@ export default {
         //键盘快捷方式
         keyAlias(e){
             e.preventDefault();
-            this.$refs.topDiv.focus();
+            //this.$refs.playBtnDiv.focus();
             if(this.disabledBtn == true) return;
             
             console.log(e);
@@ -452,6 +458,16 @@ export default {
                 
                 this.play();
             }
+        },
+        help(){
+            shell.openExternal("https://github.com/bergkamp/video-comparison-player#readme");
+        },
+        clearFocus(evt) {
+            let target = evt.target;
+            if(target.nodeName == "SPAN"){
+                target = evt.target.parentNode;
+            }
+            target.blur();
         }
     },
 };
@@ -563,4 +579,14 @@ video {
 .outline-none{
     outline:none;
 }
+
+/** english button text width */
+.el-button{
+    min-width: 90px;
+}
+.el-radio-button__inner{
+    min-width: 90px;
+    font-family:Arial;
+}
+
 </style>
