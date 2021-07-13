@@ -1,5 +1,5 @@
-<template class="app">
-    <div tabindex="1" ref="topDiv" @keydown="keyAlias($event)" style="outline:none">
+<template class="app"  >
+    <div tabindex="1" ref="topDiv"  @keydown="keyAlias($event)" style="outline:none">
         <el-row>
             <el-col :span="8">
                 <el-upload
@@ -21,7 +21,7 @@
                     >
                 </el-upload>
             </el-col>
-            <el-col :span="8" type="flex" justify="center">
+            <el-col :span="8" type="flex" justify="center" >
                 <div style="text-align: center">
                     <el-button-group>
                         <el-button
@@ -34,6 +34,7 @@
                         >
                         <el-button
                             :disabled="playBtnDisabled"
+                            ref="playBtn"
                             size="small"
                             type="primary"
                             :icon="doublePlay.icon"
@@ -347,8 +348,7 @@ export default {
                 this.rightView.player.controls = true;
                 this.overlapBtnHandle(false);
             }
-            //清除掉按钮组的focus，否则方向键会变成重叠/分离按钮的切换
-            this.$refs.topDiv.focus();
+            event.preventDefault();
         },
         overlapBtnHandle(show) {
             if (this.videoBox == null) {
@@ -426,7 +426,7 @@ export default {
         //键盘快捷方式
         keyAlias(e){
             e.preventDefault();
-            this.$refs.topDiv.focus();
+            //this.$refs.playBtnDiv.focus();
             if(this.disabledBtn == true) return;
             
             console.log(e);
@@ -461,6 +461,13 @@ export default {
         },
         help(){
             shell.openExternal("https://github.com/bergkamp/video-comparison-player#readme");
+        },
+        clearFocus(evt) {
+            let target = evt.target;
+            if(target.nodeName == "SPAN"){
+                target = evt.target.parentNode;
+            }
+            target.blur();
         }
     },
 };
