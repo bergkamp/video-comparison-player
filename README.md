@@ -1,5 +1,5 @@
-# Video Comparison Player 视频对比播放器
-EN|[中文]((./READEME-zh.md))
+# Video Comparison Player
+EN|[中文]((READEME-ZH.md))
 
 Video Comparison Player is a desktop tool for video super-resolution developers. 
 
