@@ -1,11 +1,12 @@
 # Video Comparison Player
-EN|[中文](README-zh.md)
+EN|[中文](README-ZH.md)
 
 Video Comparison Player is a desktop tool for video super-resolution developers. 
 
-Download the latest version of Mac and Windows[here](https://github.com/bergkamp/video-comparison-player/releases/latest)
+Download the latest version of Mac and Windows [here](https://github.com/bergkamp/video-comparison-player/releases/latest)
 
-![output](https://user-images.githubusercontent.com/36283/122520417-26130180-d046-11eb-96d2-f9448f7e3924.gif)
+![v050](https://user-images.githubusercontent.com/36283/125411809-d9c2a380-e3f0-11eb-8b05-d59b7a0c8fbe.gif)
+
 
 Main features:
 * Support windows and mac
