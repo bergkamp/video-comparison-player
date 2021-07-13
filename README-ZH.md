@@ -1,5 +1,5 @@
 # Video Comparison Player
-[EN](READEME.md)|中文
+[EN](README.md)|中文
 
 视频对比播放器，是为视频增强、视频修复开发者提供的对比播放桌面工具，从 [这里](https://github.com/bergkamp/video-comparison-player/releases/latest) 下载最新版Mac与Windows安装包
 
