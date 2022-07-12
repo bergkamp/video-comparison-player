@@ -617,10 +617,6 @@ video {
     outline: none;
 }
 
-#iconButton{
-
-}
-
 /** english button text width */
 /* .el-button {
     min-width: 90px;

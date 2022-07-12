@@ -9,8 +9,9 @@ Download the latest version of Mac and Windows [here](https://github.com/bergkam
 
 
 Main features:
-* Support windows and mac
+* Support Windows Mac（M1 & Intel）
 * Support two videos or pictures to be played synchronously on the left and right sides
+* Support synchronous playback progress
 * Support dark mode
 * Support shortcut keys
   * `Left and right key` control dividing line
@@ -18,12 +19,11 @@ Main features:
   * `Space` control playback pause
 * Support ffprobe to read video file parameters
 
-
-
 ## Environment Settings
 node & npm https://nodejs.org/en/download/
-node v14.16.0
-npm 6.14.11
+
+V1.0.0 node v16.15.0 npm 8.5.5
+V0.5.0 node v14.16.0 npm 6.14.11
 
 ## Set up
 ### Settings
