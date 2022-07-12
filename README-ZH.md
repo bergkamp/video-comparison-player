@@ -20,13 +20,15 @@
 
 ## 环境设置
 node & npm https://nodejs.org/en/download/
-node v14.16.0
-npm 6.14.11
+
+V1.0.0 node v16.15.0 npm 8.5.5
+
+V0.5.0 node v14.16.0 npm 6.14.11
 
 设置npm源
 ```bash
-npm config set registry http://mirrors.cloud.tencent.com/npm/
-npm config set ELECTRON_MIRROR http://mirrors.cloud.tencent.com/electron/
+npm config set registry https://registry.npmmirror.com
+npm config set ELECTRON_MIRROR https://npmmirror.com/mirrors/electron/
 ```
 ### 设置
 ```bash

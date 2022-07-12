@@ -23,6 +23,7 @@ Main features:
 node & npm https://nodejs.org/en/download/
 
 V1.0.0 node v16.15.0 npm 8.5.5
+
 V0.5.0 node v14.16.0 npm 6.14.11
 
 ## Set up
