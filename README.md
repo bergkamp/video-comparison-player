@@ -9,7 +9,7 @@ Download the latest version of Mac and Windows [here](https://github.com/bergkam
 
 
 Main features:
-* Support Windows Mac（M1 & Intel）
+* Support Windows and Mac（M1 & Intel）
 * Support two videos or pictures to be played synchronously on the left and right sides
 * Support synchronous playback progress
 * Support dark mode

@@ -12,7 +12,7 @@ module.exports = {
   },
   pluginOptions: {
     electronBuilder: {
-      productName: "video-comparison-player",
+      productName: "Video comparison player",
       nodeIntegration: true,
       contextIsolation: false,
       builderOptions: {

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "author": "Ruoshi",
   "description": "Video comparison player",
+  "homepage": "https://github.com/bergkamp/video-comparison-player#readme",
   "private": true,
   "main": "background.js",
   "scripts": {
@@ -20,7 +21,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "vue": "^2.7.4",
     "vue-i18n": "^8.27.2",
-    "vue-json-pretty": "^1.8.0"
+    "vue-json-pretty": "^1.8.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

@@ -139,9 +139,9 @@
             <el-col :span="12">
                 <div class="video-title small" v-show="leftContent.show">
                     <vue-json-pretty
-                        :data="leftContent.probe"
-                        :show-length="true"
                         :deep="0"
+                        :data="leftContent.probe.format"
+                        :show-length="true"
                     >
                     </vue-json-pretty>
                 </div>
@@ -149,9 +149,9 @@
             <el-col :span="12">
                 <div class="video-title small" v-show="rightContent.show">
                     <vue-json-pretty
-                        :data="rightContent.probe"
-                        :show-length="true"
                         :deep="0"
+                        :data="rightContent.probe.format"
+                        :show-length="true"
                     >
                     </vue-json-pretty>
                 </div>
@@ -350,10 +350,11 @@ export default {
             this.rightView.player.currentTime = current;
         },
         syncControl() {
-            this.doublePlay.durations =
+            let d =
                 (100 * this.leftView.player.currentTime) /
                 this.leftView.player.duration;
             console.log(this.doublePlay.durations);
+            this.doublePlay.durations = Math.round(d*100) / 100;
         },
         replay() {
             this.leftView.player.currentTime = 0;
