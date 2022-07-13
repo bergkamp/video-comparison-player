@@ -1,7 +1,12 @@
 <template class="app"  >
-    <div tabindex="1" ref="topDiv"  @keydown="keyAlias($event)" style="outline:none">
+    <div
+        tabindex="1"
+        ref="topDiv"
+        @keydown="keyAlias($event)"
+        style="outline: none"
+    >
         <el-row>
-            <el-col :span="8">
+            <el-col :span="4">
                 <el-upload
                     class="upload-demo"
                     ref="upload"
@@ -17,48 +22,46 @@
                         size="small"
                         type="primary"
                         icon="el-icon-document-add"
-                        >{{$t("OpenFile")}}</el-button
+                        >{{ $t("OpenFile") }}</el-button
                     >
                 </el-upload>
             </el-col>
-            <el-col :span="8" type="flex" justify="center" >
-                <div style="text-align: center">
-                    <el-button-group>
-                        <el-button
-                            :disabled="playBtnDisabled"
-                            size="small"
-                            type="primary"
-                            icon="el-icon-refresh"
-                            @click="replay"
-                            >{{$t("Replay")}}</el-button
-                        >
-                        <el-button
-                            :disabled="playBtnDisabled"
-                            ref="playBtn"
-                            size="small"
-                            type="primary"
-                            :icon="doublePlay.icon"
-                            @click="play()"
-                            >{{doublePlay.text}}</el-button
-                        >
-                    </el-button-group>
+            <el-col :span="2" type="flex" justify="center">
+                <div style="float:right;margin-right: 15px;min-height: 10px;">
+                    <i :class="doublePlay.icon" v-show="!playBtnDisabled" style="font-size:30px;color:rgb(102, 177, 255);line-height: 32px;" @click="play()"></i>
                 </div>
             </el-col>
-            <el-col :span="8" type="flex" justify="end">
+            <el-col :span="12" type="flex" justify="left">
+                <div style="min-height:10px;">
+                    <el-slider
+                        v-show="!playBtnDisabled"
+                        v-model="doublePlay.durations"
+                        @change="control"
+                        :disabled="playBtnDisabled"
+                    ></el-slider>
+                    
+                </div>
+            </el-col>
+            <el-col :span="6" type="flex" justify="end">
                 <div class="right">
                     <el-radio-group
                         v-model="overlapRadio"
                         size="small"
                         @change="overlap"
                     >
-                        <el-radio-button label="0" :disabled="overlapBtnDisabled"
-                            >{{$t("Split")}}</el-radio-button
+                        <el-radio-button
+                            label="0"
+                            :disabled="overlapBtnDisabled"
+                            >{{ $t("Split") }}</el-radio-button
                         >
-                        <el-radio-button label="1" :disabled="overlapBtnDisabled"
-                            >{{$t("Overlap")}}</el-radio-button
+                        <el-radio-button
+                            label="1"
+                            :disabled="overlapBtnDisabled"
+                            >{{ $t("Overlap") }}</el-radio-button
                         >
                     </el-radio-group>
-                    <el-button style="margin-left:8px;min-width:40px;" type="info" size="small" icon="el-icon-info" @click="help()"></el-button>
+                    <i class="el-icon-info" style="font-size:20px;color:grey;margin-left: 5px;height: 20px;" @click="help()"></i>
+                    
                 </div>
             </el-col>
         </el-row>
@@ -71,20 +74,22 @@
                         :style="{ width: playerWidth }"
                     >
                         <video
-                        v-show="leftView.isVideo===true"
+                            v-show="leftView.isVideo === true"
                             ref="leftPlayer"
                             class="video-player"
                             controls="true"
                             autoplay="false"
                             preload="false"
+                            @timeupdate="syncControl"
                         >
                             <source src="" type="" />
                         </video>
-                         <img
-                         v-show="leftView.isVideo===false"
-                         ref="leftImage"
-                         class="image-player"
-                         src=""/>
+                        <img
+                            v-show="leftView.isVideo === false"
+                            ref="leftImage"
+                            class="image-player"
+                            src=""
+                        />
                     </div>
                     <div
                         class="img-comp-line"
@@ -99,7 +104,7 @@
                         :style="{ width: playerWidth }"
                     >
                         <video
-                            v-show="rightView.isVideo===true"
+                            v-show="rightView.isVideo === true"
                             ref="rightPlayer"
                             class="video-player"
                             controls="true"
@@ -109,68 +114,80 @@
                             <source src="" type="" />
                         </video>
                         <img
-                         v-show="rightView.isVideo===false"
-                         ref="rightImage"
-                         class="image-player"
-                         src="" />
+                            v-show="rightView.isVideo === false"
+                            ref="rightImage"
+                            class="image-player"
+                            src=""
+                        />
                     </div>
                 </div>
             </el-col>
         </el-row>
         <el-row :gutter="5">
             <el-col :span="12">
-                <div class="video-title small">&nbsp;{{ leftContent.title }}</div>
+                <div class="video-title small">
+                    &nbsp;{{ leftContent.title }}
+                </div>
             </el-col>
             <el-col :span="12">
-                <div class="video-title small">&nbsp;{{ rightContent.title }}</div>
+                <div class="video-title small">
+                    &nbsp;{{ rightContent.title }}
+                </div>
             </el-col>
         </el-row>
         <el-row :gutter="5">
             <el-col :span="12">
-                    
                 <div class="video-title small" v-show="leftContent.show">
-                    <vue-json-pretty :data="leftContent.probe" :show-length="true" :deep="0" > </vue-json-pretty>
+                    <vue-json-pretty
+                        :deep="0"
+                        :data="leftContent.probe.format"
+                        :show-length="true"
+                    >
+                    </vue-json-pretty>
                 </div>
             </el-col>
             <el-col :span="12">
-                    <div class="video-title small" v-show="rightContent.show">
-                        <vue-json-pretty :data="rightContent.probe" :show-length="true" :deep="0" > </vue-json-pretty>
-                    </div>
+                <div class="video-title small" v-show="rightContent.show">
+                    <vue-json-pretty
+                        :deep="0"
+                        :data="rightContent.probe.format"
+                        :show-length="true"
+                    >
+                    </vue-json-pretty>
+                </div>
             </el-col>
         </el-row>
     </div>
 </template>
 
 <script>
-//fluent-ffmpeg是针对ffmpeg命令的封装 https://github.com/fluent-ffmpeg/node-fluent-ffmpeg#readme
-const fluentFfmpeg = require('fluent-ffmpeg');
-const shell = require('electron').shell;
+const shell = require("electron").shell;
 
-import ffmpeg from "./components/Ffmpeg";
-import VueJsonPretty from 'vue-json-pretty';
-import 'vue-json-pretty/lib/styles.css';
+import fluentFfmpeg from "./components/Ffmpeg";
+import VueJsonPretty from "vue-json-pretty";
+import "vue-json-pretty/lib/styles.css";
 
 export default {
     name: "App",
     data() {
         return {
             leftContent: {
-                show:false,
-                title:" ",
-                probe:" "
+                show: false,
+                title: " ",
+                probe: " ",
             },
             rightContent: {
-                show:false,
-                title:" ",
-                probe:" "
+                show: false,
+                title: " ",
+                probe: " ",
             },
-            leftView:{
-                isVideo: true,//video true,image false
-                player:null,
+            leftView: {
+                isVideo: true, //video true,image false
+                player: null,
             },
-            rightView:{
+            rightView: {
                 isVideo: true,
-                player:null,
+                player: null,
             },
             currPlayer: "left", //left|right
             fileList: [],
@@ -184,25 +201,23 @@ export default {
             overlapLine: null,
             overlapBtnShow: false,
             overlapBtnClicked: false,
-            doublePlay:{
-                status:false,//true表示播放中，false表示暂停中
+            doublePlay: {
+                status: true, //true:playing，false:pause
                 text: this.$t("Play"),
-                icon:'el-icon-video-play'
+                icon: "el-icon-video-pause",
+                durations: 0,
             },
         };
     },
-    created(){
+    created() {
         document.title = this.$t("AppName");
     },
     components: {
-        VueJsonPretty
+        VueJsonPretty,
     },
     mounted() {
         this.leftView.player = this.$refs.leftPlayer;
         this.rightView.player = this.$refs.rightPlayer;
-
-        //初始化二进制文件的路经
-        fluentFfmpeg.setFfprobePath(ffmpeg.ffprobePath);
     },
     methods: {
         handleChange(file, fileList) {
@@ -216,121 +231,137 @@ export default {
             fileList.forEach((element) => {
                 if (count > 1) return; //最多一次处理2个文件
                 console.log(element);
-                
+
                 //类型检查,如image/jpeg
-                let fileTypes = element.raw.type.split('/');
-                let isVideo = fileTypes[0] == 'video' ? true : false;
+                let fileTypes = element.raw.type.split("/");
+                let isVideo = fileTypes[0] == "video" ? true : false;
                 console.log(fileTypes);
-                
+
                 var that = this;
                 if (this.currPlayer == "left") {
                     this.leftContent.show = true;
                     this.leftContent.title = element.name;
-                    
-                    fluentFfmpeg.ffprobe(element.raw.path, function(err, metadata) {
-                        console.log("==metadata==",metadata);
-                        //console.log("leftprobe",this.leftProbe);
-                        that.leftContent.probe = metadata
-                    });
+
+                    fluentFfmpeg.ffprobe(
+                        element.raw.path,
+                        function (err, metadata) {
+                            console.log("==metadata==", metadata);
+                            that.leftContent.probe = metadata;
+                        }
+                    );
                     //this.leftProbe = fluentFfmpeg.ffprobe(element.raw.path);
                     this.leftView.isVideo = isVideo;
 
-                    if(isVideo){
-                        this.leftView.player = this.$refs.leftPlayer; 
-                    }else{
+                    if (isVideo) {
+                        this.leftView.player = this.$refs.leftPlayer;
+                    } else {
                         this.leftView.player = this.$refs.leftImage;
                     }
-                                       
+
                     this.loadPlay(element, this.leftView.player);
                     this.currPlayer = "right";
                 } else {
                     this.rightContent.show = true;
                     this.rightContent.title = element.name;
-                    fluentFfmpeg.ffprobe(element.raw.path, function(err, metadata) {
-                        that.rightContent.probe = metadata;
-                    });
+                    fluentFfmpeg.ffprobe(
+                        element.raw.path,
+                        function (err, metadata) {
+                            that.rightContent.probe = metadata;
+                        }
+                    );
                     this.rightView.isVideo = isVideo;
-                    if(isVideo){
+                    if (isVideo) {
                         this.rightView.player = this.$refs.rightPlayer;
-                    }else{
+                    } else {
                         this.rightView.player = this.$refs.rightImage;
                     }
-                    
+
                     this.loadPlay(element, this.rightView.player);
                     this.currPlayer = "left";
                 }
-                console.log(this.currPlayer, element.name);
                 count++;
             });
-            
-            //分离按钮
-            if (this.leftView.player.src != "" && this.rightView.player.src != "") {
+
+            //Split button
+            if (
+                this.leftView.player.src != "" &&
+                this.rightView.player.src != ""
+            ) {
                 this.overlapBtnDisabled = false;
             }
 
-            //播放按钮
-            if (this.leftView.isVideo && this.rightView.isVideo){
+            //play button
+            if (this.leftView.isVideo && this.rightView.isVideo) {
                 this.playBtnDisabled = false;
             }
             this.fileList = [];
         },
         loadPlay(file, player) {
             var fileURL = URL.createObjectURL(file.raw);
-            console.log("==fileUrl==",fileURL);
+            console.log("==fileUrl==", fileURL);
             player.src = fileURL;
-            console.log("==player===",player);
-            if(player.isVideo){
+            console.log("==player===", player);
+            if (player.isVideo) {
                 player.pause();
             }
-            
+
             // var playPromise = player.play();
 
-            // //解决这个报错https://www.jackpu.com/jie-jue-xin-ban-ben-chrome-ti-shi-domexception-the-play-request-was-interrupted/
+            // fix warning https://www.jackpu.com/jie-jue-xin-ban-ben-chrome-ti-shi-domexception-the-play-request-was-interrupted/
             // if (playPromise !== undefined) {
             //     playPromise
             //         .then(() => {
-            //             // 这个时候可以安全的暂停
+            //             // safe pause
             //             //player.pause();
             //         })
             //         .catch(() => {});
             // }
         },
         play(status) {
-            console.log(this.doublePlay)
+            console.log(this.doublePlay);
             let nowStatus = this.doublePlay.status;
-            
-            if(typeof(status) !== 'undefined'){
+
+            if (typeof status !== "undefined") {
                 nowStatus = status;
                 console.log(status);
             }
-            
-            if(nowStatus == false){
+
+            if (nowStatus == false) {
                 this.doublePlay.status = true;
                 this.doublePlay.text = this.$t("Pause");
                 this.doublePlay.icon = "el-icon-video-pause";
-                
+
                 this.leftView.player.play();
                 this.rightView.player.play();
-            }else{
+            } else {
                 this.doublePlay.status = false;
                 this.doublePlay.text = this.$t("Play");
                 this.doublePlay.icon = "el-icon-video-play";
-                
+
                 this.leftView.player.pause();
                 this.rightView.player.pause();
             }
-            console.log(this.doublePlay)
+        },
+        control() {
+            let total = this.leftView.player.duration;
+            let current = (total * this.doublePlay.durations) / 100;
 
-            
+            this.leftView.player.currentTime = current;
+            this.rightView.player.currentTime = current;
+        },
+        syncControl() {
+            let d =
+                (100 * this.leftView.player.currentTime) /
+                this.leftView.player.duration;
+            console.log(this.doublePlay.durations);
+            this.doublePlay.durations = Math.round(d*100) / 100;
         },
         replay() {
             this.leftView.player.currentTime = 0;
             this.rightView.player.currentTime = 0;
             this.play(false);
         },
-        pause() {
-            
-        },
+        pause() {},
         overlap() {
             console.log(this.overlapRadio);
             if (this.overlapRadio == 1) {
@@ -391,16 +422,15 @@ export default {
             this.overlapMove(pos);
         },
         //pos=center时回中，否则按照参数移动
-        overlapMove(pos){
+        overlapMove(pos) {
+            var videoBoxWidth = this.videoBox.getBoundingClientRect().width;
 
-            var videoBoxWidth =this.videoBox.getBoundingClientRect().width;
-
-            //回中
-            if(pos == 'center'){
-                pos = videoBoxWidth/2 -2;
+            //back to center
+            if (pos == "center") {
+                pos = videoBoxWidth / 2 - 2;
             }
 
-            //限制移动边界
+            //limit move edge
             if (pos < 10) pos = 10;
             var maxPos = videoBoxWidth - 10;
             if (pos > maxPos) pos = maxPos;
@@ -408,7 +438,8 @@ export default {
             this.overlapLine.style.left = pos + "px";
             pos = pos + 1;
             pos = videoBoxWidth - pos;
-            this.leftView.player.style.clipPath = "inset(0px " + pos + "px 0px 0px )";            
+            this.leftView.player.style.clipPath =
+                "inset(0px " + pos + "px 0px 0px )";
         },
         getCursorPos(e) {
             var a,
@@ -422,64 +453,71 @@ export default {
             x = x - window.pageXOffset;
             return x;
         },
-        
-        //键盘快捷方式
-        keyAlias(e){
+
+        //keybord shortcut
+        keyAlias(e) {
             e.preventDefault();
             //this.$refs.playBtnDiv.focus();
-            if(this.disabledBtn == true) return;
-            
+            if (this.disabledBtn == true) return;
+
             console.log(e);
-            //一次移动的距离，按住shift加速一倍
+            //press the shift key, double move
             let movePos = 20;
-            if(e.shiftKey==true){
-                movePos = movePos*4;
+            if (e.shiftKey == true) {
+                movePos = movePos * 4;
             }
 
-            if(e.key == 'ArrowLeft'){
-                if(this.overlapBtnShow == false) return;
+            if (e.key == "ArrowLeft") {
+                if (this.overlapBtnShow == false) return;
                 let pos = parseInt(this.overlapLine.style.left);
-                console.log(pos,e.shiftKey);
-                this.overlapMove(pos-movePos);
+                console.log(pos, e.shiftKey);
+                this.overlapMove(pos - movePos);
             }
 
-            if(e.key == 'ArrowRight'){
-                if(this.overlapBtnShow == false) return;
+            if (e.key == "ArrowRight") {
+                if (this.overlapBtnShow == false) return;
                 let pos = parseInt(this.overlapLine.style.left);
-                this.overlapMove(pos+movePos);
+                this.overlapMove(pos + movePos);
             }
 
-            if(e.key == 'ArrowUp'){//回中
-                if(this.overlapBtnShow == false) return;
-                this.overlapMove('center');
+            if (e.key == "ArrowUp") {
+                //back to center
+                if (this.overlapBtnShow == false) return;
+                this.overlapMove("center");
             }
 
-            if(e.code == 'Space'){//播放暂停
-                
+            if (e.code == "Space") {
+                //play pause
+
                 this.play();
             }
         },
-        help(){
-            shell.openExternal("https://github.com/bergkamp/video-comparison-player#readme");
+        help() {
+            shell.openExternal(
+                "https://github.com/bergkamp/video-comparison-player#readme"
+            );
         },
         clearFocus(evt) {
             let target = evt.target;
-            if(target.nodeName == "SPAN"){
+            if (target.nodeName == "SPAN") {
                 target = evt.target.parentNode;
             }
             target.blur();
-        }
+        },
     },
 };
 </script>
 
 <style>
-
 @media (prefers-color-scheme: dark) {
-  body{ background:  #333;}
+    body {
+        background: #333;
+    }
 }
 @media (prefers-color-scheme: light) {
-  body{ background: white;}
+    body {
+        background: white;
+    }
 }
 .app {
     font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
@@ -518,7 +556,7 @@ export default {
 .video-player {
     width: 100%;
 }
-.image-player{
+.image-player {
     width: 100%;
 }
 .video-title {
@@ -573,20 +611,20 @@ video {
 }
 .video-box {
     /* width:800px;*/
-  /* height:600px;  */
+    /* height:600px;  */
     object-fit: contain;
 }
-.outline-none{
-    outline:none;
+.outline-none {
+    outline: none;
 }
 
 /** english button text width */
-.el-button{
+/* .el-button {
     min-width: 90px;
-}
-.el-radio-button__inner{
-    min-width: 90px;
-    font-family:Arial;
-}
+} */
 
+.el-radio-button__inner {
+    min-width: 90px;
+    font-family: Arial;
+}
 </style>

@@ -3,7 +3,11 @@
 import { app, protocol, BrowserWindow, Menu } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+const path = require('path')
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+// require("@electron/remote/main").enable(win.webContents)
+require('@electron/remote/main').initialize();
 
 //import { videoSupport } from './components/Ffprobe';
 
@@ -33,10 +37,10 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 800,
+    width: 900,
     height: 700,
     minHeight: 700,
-    minWidth: 800,
+    minWidth: 900,
     darkTheme: true,
     backgroundColor: "#2c3138",
     webPreferences: {
@@ -64,6 +68,8 @@ async function createWindow() {
   }
 }
 
+//console.log(process.env.NODE_ENV);
+
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
@@ -71,6 +77,11 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+// update to @electron/remote https://github.com/electron/remote
+app.on('browser-window-created', (_, window) => {
+    require("@electron/remote/main").enable(window.webContents)
 })
 
 app.on('activate', () => {
@@ -83,6 +94,7 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+    console.log(app.getLocale());
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
@@ -110,8 +122,4 @@ if (isDevelopment) {
     })
   }
 }
-
-//ffprobe
-//import ffprobe from "@ffprobe-installer/ffprobe";
-//var ffprobe = require('ffprobe-static-electron');
 

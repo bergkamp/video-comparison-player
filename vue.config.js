@@ -12,7 +12,7 @@ module.exports = {
   },
   pluginOptions: {
     electronBuilder: {
-      productName: "video-comparison-player",
+      productName: "Video comparison player",
       nodeIntegration: true,
       contextIsolation: false,
       builderOptions: {
@@ -31,7 +31,7 @@ module.exports = {
         extraFiles: [
           
           {
-            from: "node_modules/ffprobe-static-electron/bin/${os}/${arch}",
+            from: "node_modules/@ffprobe-installer/${platform}-${arch}",
             to: "static"
           }
         ]

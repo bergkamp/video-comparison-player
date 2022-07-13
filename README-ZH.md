@@ -6,8 +6,9 @@
 ![v050](https://user-images.githubusercontent.com/36283/125411809-d9c2a380-e3f0-11eb-8b05-d59b7a0c8fbe.gif)
 
 主要功能：
-* 支持windows与mac
+* 支持windows与mac（M1 & Intel）
 * 支持两个视频或图片左右同步对比播放
+* 支持同步控制视频播放进度
 * 支持暗黑模式
 * 支持快捷键
   * `左右方向`控制分割线
@@ -19,13 +20,15 @@
 
 ## 环境设置
 node & npm https://nodejs.org/en/download/
-node v14.16.0
-npm 6.14.11
+
+V1.0.0 node v16.15.0 npm 8.5.5
+
+V0.5.0 node v14.16.0 npm 6.14.11
 
 设置npm源
 ```bash
-npm config set registry https://registry.npm.taobao.org
-npm config set ELECTRON_MIRROR http://npm.taobao.org/mirrors/electron/
+npm config set registry https://registry.npmmirror.com
+npm config set ELECTRON_MIRROR https://npmmirror.com/mirrors/electron/
 ```
 ### 设置
 ```bash

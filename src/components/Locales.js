@@ -1,12 +1,13 @@
 //https://segmentfault.com/a/1190000015008808
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-const app = require('electron').remote.app;
+//const app = require('electron').remote.app;
 
 import eleLang from 'element-ui/lib/locale/lang/en'
 import eleLocale from 'element-ui/lib/locale'
 
-
+//var app = require('electron').remote.app
+const app = require('@electron/remote').app
 Vue.use(VueI18n)
 
 
@@ -47,7 +48,7 @@ export const setup = lang => {
     i18n.locale = lang
 
     //设置element语言
-    console.log("==lang==",lang);
+    //console.log("==lang==",lang);
     if(lang != 'zh-CN'){
         eleLocale.use(eleLang);
     }
@@ -68,6 +69,6 @@ export const setup = lang => {
     //   Vue.config.lang = lang
 
 }
-console.log(app.getLocale());
+
 setup(app.getLocale());
 export default i18n
