@@ -26,10 +26,8 @@ V1.0.0 node v16.15.0 npm 8.5.5
 V0.5.0 node v14.16.0 npm 6.14.11
 
 设置npm源
-```bash
-npm config set registry https://registry.npmmirror.com
-npm config set ELECTRON_MIRROR https://npmmirror.com/mirrors/electron/
-```
+https://www.electronjs.org/zh/docs/latest/tutorial/installation#%E8%87%AA%E5%AE%9A%E4%B9%89%E9%95%9C%E5%83%8F%E5%92%8C%E7%BC%93%E5%AD%98
+
 ### 设置
 ```bash
 npm install

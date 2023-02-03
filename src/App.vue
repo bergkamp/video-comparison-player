@@ -137,20 +137,20 @@
         </el-row>
         <el-row :gutter="5">
             <el-col :span="12">
-                <div class="video-title small" v-show="leftContent.show">
+                <div class="video-title video-probe small" v-show="leftContent.show">
                     <vue-json-pretty
-                        :deep="0"
-                        :data="leftContent.probe.format"
+                        :deep="1"
+                        :data="leftContent.probe"
                         :show-length="true"
                     >
                     </vue-json-pretty>
                 </div>
             </el-col>
             <el-col :span="12">
-                <div class="video-title small" v-show="rightContent.show">
+                <div class="video-title video-probe small" v-show="rightContent.show">
                     <vue-json-pretty
-                        :deep="0"
-                        :data="rightContent.probe.format"
+                        :deep="1"
+                        :data="rightContent.probe"
                         :show-length="true"
                     >
                     </vue-json-pretty>
@@ -245,7 +245,6 @@ export default {
                     fluentFfmpeg.ffprobe(
                         element.raw.path,
                         function (err, metadata) {
-                            console.log("==metadata==", metadata);
                             that.leftContent.probe = metadata;
                         }
                     );
@@ -565,6 +564,10 @@ export default {
     text-overflow: ellipsis;
     width: 100%;
     color: #ccc;
+}
+.video-probe{
+    height:300px;
+    overflow-y:auto;
 }
 #leftDiv {
     width: 100%;
