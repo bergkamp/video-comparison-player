@@ -20,8 +20,7 @@ const messages = {
         Replay: "重播",
         Overlap: "重叠",
         Split: "分离",
-
-        
+        Info: "媒体信息"
     },
     'en': {
         AppName: "Video Comparison Player",
@@ -31,6 +30,7 @@ const messages = {
         Replay: "Replay",
         Overlap: "Overlap",
         Split: "Split ",
+        Info: "Info"
     },
 };
 const DEFAULT_LANG = 'en'
