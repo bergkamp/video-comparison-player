@@ -2,7 +2,6 @@
     <div
         tabindex="1"
         ref="topDiv"
-        @keydown="keyAlias($event)"
         style="outline: none"
     >
         <el-row>
@@ -75,6 +74,7 @@
                         <video
                             v-show="leftView.isVideo === true"
                             muted
+                            loop
                             ref="leftPlayer"
                             class="video-player"
                             controls="true"
@@ -106,6 +106,7 @@
                         <video
                             v-show="rightView.isVideo === true"
                             muted
+                            loop
                             ref="rightPlayer"
                             class="video-player"
                             controls="true"
@@ -212,6 +213,7 @@ export default {
     },
     created() {
         document.title = this.$t("AppName");
+        document.addEventListener("keydown",this.keyAlias);
     },
     components: {},
     mounted() {
@@ -524,6 +526,9 @@ export default {
             return tmp.toFixed(0);
         }
     },
+    beforeDestroy(){
+        document.removeEventListener("keydown",this.keyAlias);
+    }
 };
 </script>
 
