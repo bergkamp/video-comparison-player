@@ -2,7 +2,6 @@
     <div
         tabindex="1"
         ref="topDiv"
-        @keydown="keyAlias($event)"
         style="outline: none"
     >
         <el-row>
@@ -28,10 +27,10 @@
             </el-col>
             <el-col :span="2" type="flex" justify="center">
                 <div style="float:right;margin-right: 15px;min-height: 10px;">
-                    <i :class="doublePlay.icon" v-show="!playBtnDisabled" style="font-size:30px;color:rgb(102, 177, 255);line-height: 32px;" @click="play()"></i>
+                    <i :class="doublePlay.icon" v-show="!playBtnDisabled" style="font-size:30px;color:rgb(102, 177, 255);line-height: 32px;" @click="handleDoublePlay()"></i>
                 </div>
             </el-col>
-            <el-col :span="12" type="flex" justify="left">
+            <el-col :span="10" type="flex" justify="left">
                 <div style="min-height:10px;">
                     <el-slider
                         v-show="!playBtnDisabled"
@@ -42,7 +41,7 @@
                     
                 </div>
             </el-col>
-            <el-col :span="6" type="flex" justify="end">
+            <el-col :span="8" type="flex" justify="end">
                 <div class="right">
                     <el-radio-group
                         v-model="overlapRadio"
@@ -60,8 +59,7 @@
                             >{{ $t("Overlap") }}</el-radio-button
                         >
                     </el-radio-group>
-                    <i class="el-icon-info" style="font-size:20px;color:grey;margin-left: 5px;height: 20px;" @click="help()"></i>
-                    
+                    <el-button style="margin-left: 5px;" size="small" :disabled="infoShowBtnDisabled" type="primary" @click="handleInfoShow" >{{ $t("Info") }}</el-button>
                 </div>
             </el-col>
         </el-row>
@@ -75,6 +73,8 @@
                     >
                         <video
                             v-show="leftView.isVideo === true"
+                            muted
+                            loop
                             ref="leftPlayer"
                             class="video-player"
                             controls="true"
@@ -84,12 +84,13 @@
                         >
                             <source src="" type="" />
                         </video>
-                        <img
-                            v-show="leftView.isVideo === false"
-                            ref="leftImage"
-                            class="image-player"
-                            src=""
-                        />
+                        <v-zoomer v-show="leftView.isVideo === false"
+                        :max-scale="10"
+                        :zooming-elastic="false"
+                        :zoomed.sync="zoomed"
+                        class="image-player">
+                            <img src="" ref="leftImage" style="object-fit: contain; width: 100%; height: 100%;">
+                        </v-zoomer>
                     </div>
                     <div
                         class="img-comp-line"
@@ -105,6 +106,8 @@
                     >
                         <video
                             v-show="rightView.isVideo === true"
+                            muted
+                            loop
                             ref="rightPlayer"
                             class="video-player"
                             controls="true"
@@ -135,25 +138,25 @@
                 </div>
             </el-col>
         </el-row>
-        <el-row :gutter="5">
+        <el-row :gutter="5" v-if="infoShow">
             <el-col :span="12">
-                <div class="video-title small" v-show="leftContent.show">
-                    <vue-json-pretty
-                        :deep="0"
-                        :data="leftContent.probe.format"
-                        :show-length="true"
-                    >
-                    </vue-json-pretty>
+                <div class="video-title video-probe small" v-show="leftContent.show">
+                    <el-descriptions :column="2">
+                        <el-descriptions-item label="Codec">{{ leftContent.probe.codec_name }}</el-descriptions-item>
+                        <el-descriptions-item label="Resolution">{{ leftContent.probe.width+' x '+ leftContent.probe.height }}</el-descriptions-item>
+                        <el-descriptions-item label="Bit rate">{{ formatBitrate(leftContent.probe.bit_rate) }}</el-descriptions-item>
+                        <el-descriptions-item label="Frame rate">{{ formatFramerate(leftContent.probe.avg_frame_rate) }}</el-descriptions-item>
+                    </el-descriptions>
                 </div>
             </el-col>
             <el-col :span="12">
-                <div class="video-title small" v-show="rightContent.show">
-                    <vue-json-pretty
-                        :deep="0"
-                        :data="rightContent.probe.format"
-                        :show-length="true"
-                    >
-                    </vue-json-pretty>
+                <div class="video-title video-probe small" v-show="rightContent.show">
+                    <el-descriptions :column="2">
+                        <el-descriptions-item label="Codec">{{ rightContent.probe.codec_name }}</el-descriptions-item>
+                        <el-descriptions-item label="Resolution">{{ rightContent.probe.width+' x '+ rightContent.probe.height }}</el-descriptions-item>
+                        <el-descriptions-item label="Bit rate">{{ formatBitrate(rightContent.probe.bit_rate) }}</el-descriptions-item>
+                        <el-descriptions-item label="Frame rate">{{ formatFramerate(rightContent.probe.avg_frame_rate) }}</el-descriptions-item>
+                    </el-descriptions>
                 </div>
             </el-col>
         </el-row>
@@ -164,8 +167,7 @@
 const shell = require("electron").shell;
 
 import fluentFfmpeg from "./components/Ffmpeg";
-import VueJsonPretty from "vue-json-pretty";
-import "vue-json-pretty/lib/styles.css";
+import VueZoomer from 'vue-zoomer';
 
 export default {
     name: "App",
@@ -202,18 +204,22 @@ export default {
             overlapBtnShow: false,
             overlapBtnClicked: false,
             doublePlay: {
-                status: true, //true:playing，false:pause
+                status: false, //true:playing，false:pause
                 text: this.$t("Play"),
-                icon: "el-icon-video-pause",
+                icon: "el-icon-video-play",
                 durations: 0,
             },
+            infoShow: false,
+            infoShowBtnDisabled: true,
+            zoomed:false,
         };
     },
     created() {
         document.title = this.$t("AppName");
+        document.addEventListener("keydown",this.keyAlias);
     },
     components: {
-        VueJsonPretty,
+        VZoomer: VueZoomer.Zoomer
     },
     mounted() {
         this.leftView.player = this.$refs.leftPlayer;
@@ -221,8 +227,6 @@ export default {
     },
     methods: {
         handleChange(file, fileList) {
-            console.log("===file===", file);
-
             //如果一次选择两个视频，则leftplayer开始loading
             if (fileList.length == 2) {
                 this.currPlayer = "left";
@@ -235,7 +239,6 @@ export default {
                 //类型检查,如image/jpeg
                 let fileTypes = element.raw.type.split("/");
                 let isVideo = fileTypes[0] == "video" ? true : false;
-                console.log(fileTypes);
 
                 var that = this;
                 if (this.currPlayer == "left") {
@@ -245,8 +248,8 @@ export default {
                     fluentFfmpeg.ffprobe(
                         element.raw.path,
                         function (err, metadata) {
-                            console.log("==metadata==", metadata);
-                            that.leftContent.probe = metadata;
+                            console.log(metadata.streams[0])
+                            that.leftContent.probe = metadata.streams[0];
                         }
                     );
                     //this.leftProbe = fluentFfmpeg.ffprobe(element.raw.path);
@@ -258,7 +261,7 @@ export default {
                         this.leftView.player = this.$refs.leftImage;
                     }
 
-                    this.loadPlay(element, this.leftView.player);
+                    this.loadPlay(element, this.leftView);
                     this.currPlayer = "right";
                 } else {
                     this.rightContent.show = true;
@@ -266,7 +269,7 @@ export default {
                     fluentFfmpeg.ffprobe(
                         element.raw.path,
                         function (err, metadata) {
-                            that.rightContent.probe = metadata;
+                            that.rightContent.probe = metadata.streams[0];
                         }
                     );
                     this.rightView.isVideo = isVideo;
@@ -276,17 +279,14 @@ export default {
                         this.rightView.player = this.$refs.rightImage;
                     }
 
-                    this.loadPlay(element, this.rightView.player);
+                    this.loadPlay(element, this.rightView);
                     this.currPlayer = "left";
                 }
                 count++;
             });
 
             //Split button
-            if (
-                this.leftView.player.src != "" &&
-                this.rightView.player.src != ""
-            ) {
+            if (this.leftView.player.src != "" && this.rightView.player.src != "") {
                 this.overlapBtnDisabled = false;
             }
 
@@ -295,35 +295,35 @@ export default {
                 this.playBtnDisabled = false;
             }
             this.fileList = [];
-        },
-        loadPlay(file, player) {
-            var fileURL = URL.createObjectURL(file.raw);
-            console.log("==fileUrl==", fileURL);
-            player.src = fileURL;
-            console.log("==player===", player);
-            if (player.isVideo) {
-                player.pause();
+
+            // info button
+            if(this.leftView.isVideo || this.rightView.isVideo){
+                this.infoShowBtnDisabled = false;
             }
-
-            // var playPromise = player.play();
-
-            // fix warning https://www.jackpu.com/jie-jue-xin-ban-ben-chrome-ti-shi-domexception-the-play-request-was-interrupted/
-            // if (playPromise !== undefined) {
-            //     playPromise
-            //         .then(() => {
-            //             // safe pause
-            //             //player.pause();
-            //         })
-            //         .catch(() => {});
-            // }
         },
-        play(status) {
-            console.log(this.doublePlay);
+        loadPlay(file, viewer) {
+            var fileURL = URL.createObjectURL(file.raw);
+            viewer.player.src = fileURL;
+            console.log("==player===", viewer.player);
+            if (viewer.isVideo) {
+                //fix warning https://www.jackpu.com/jie-jue-xin-ban-ben-chrome-ti-shi-domexception-the-play-request-was-interrupted/
+                var playPromise = viewer.player.play();
+                console.log("aaaa====",playPromise);
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        // safe pause
+                        viewer.player.pause();
+                    })
+                    .catch(() => {});
+                }
+            }
+        },
+        handleDoublePlay(status) {
+            console.log("doubleplay===",this.doublePlay.status);
             let nowStatus = this.doublePlay.status;
 
             if (typeof status !== "undefined") {
                 nowStatus = status;
-                console.log(status);
             }
 
             if (nowStatus == false) {
@@ -353,17 +353,15 @@ export default {
             let d =
                 (100 * this.leftView.player.currentTime) /
                 this.leftView.player.duration;
-            console.log(this.doublePlay.durations);
             this.doublePlay.durations = Math.round(d*100) / 100;
         },
         replay() {
             this.leftView.player.currentTime = 0;
             this.rightView.player.currentTime = 0;
-            this.play(false);
+            this.handleDoublePlay(false);
         },
         pause() {},
         overlap() {
-            console.log(this.overlapRadio);
             if (this.overlapRadio == 1) {
                 //重叠
                 this.playerWidth = "100%";
@@ -400,7 +398,6 @@ export default {
 
             //open overlap button
             var videoBoxRect = this.videoBox.getBoundingClientRect();
-            console.log(this.videoBoxRect);
             this.overlapLine.style.left = videoBoxRect.width / 2 - 2 + "px";
             this.overlapBtnShow = true;
 
@@ -488,8 +485,7 @@ export default {
 
             if (e.code == "Space") {
                 //play pause
-
-                this.play();
+                this.handleDoublePlay();
             }
         },
         help() {
@@ -504,7 +500,40 @@ export default {
             }
             target.blur();
         },
+        handleInfoShow(){
+            this.infoShow = !this.infoShow;
+        },
+        // format to KMG
+        formatBitrate(fileSize) {
+            if (fileSize < 1024) {
+                return fileSize + 'bps';
+            } else if (fileSize < (1024*1024)) {
+                var temp = fileSize / 1024;
+                temp = temp.toFixed(2);
+                return temp + 'Kbps';
+            } else if (fileSize < (1024*1024*1024)) {
+                var temp = fileSize / (1024*1024);
+                temp = temp.toFixed(2);
+                return temp + 'Mbps';
+            } else {
+                var temp = fileSize / (1024*1024*1024);
+                temp = temp.toFixed(2);
+                return temp + 'Gbps';
+            }
+        },
+        // from 30000/100 to 30
+        formatFramerate(fr) {
+            if(typeof(fr) == 'undefined') return '';
+            console.log(fr);
+            
+            let frames = fr.split("/")
+            let tmp = frames[0]/frames[1];
+            return tmp.toFixed(0);
+        }
     },
+    beforeDestroy(){
+        document.removeEventListener("keydown",this.keyAlias);
+    }
 };
 </script>
 
@@ -564,13 +593,15 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
-    color: #ccc;
+    font-size: small;
+    color: #606266;
+}
+.video-probe{
+    overflow-y:auto;
 }
 #leftDiv {
-    width: 100%;
     float: left;
     position: absolute;
-    left: 0;
     top: 0;
     z-index: 9;
     overflow: hidden;
@@ -578,7 +609,6 @@ export default {
     /* background: url(./assets/video.svg) center center no-repeat; */
 }
 #rightDiv {
-    width: 100%;
     float: right;
     object-fit: contain;
     /* background: url(./assets/video.svg) center center no-repeat; */
@@ -610,8 +640,6 @@ video {
     object-fit: contain;
 }
 .video-box {
-    /* width:800px;*/
-    /* height:600px;  */
     object-fit: contain;
 }
 .outline-none {
@@ -626,5 +654,9 @@ video {
 .el-radio-button__inner {
     min-width: 90px;
     font-family: Arial;
+}
+.el-descriptions__body {
+    background-color:transparent;
+    font-size:small;
 }
 </style>

@@ -21,7 +21,7 @@ Main features:
   * `Left and right key` control dividing line
   * `Up key` to control the direction key to return to center
   * `Space` control playback pause
-* Support ffprobe to read video file parameters
+* Support H.264|HEVC|AV1 codecs
 
 ## Environment Settings
 node & npm https://nodejs.org/en/download/
