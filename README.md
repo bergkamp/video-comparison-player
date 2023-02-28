@@ -1,7 +1,11 @@
 # Video Comparison Player
 <a href="https://github.com/bergkamp/video-comparison-player/releases/latest"> <img src="https://img.shields.io/github/v/release/bergkamp/video-comparison-player?display_name=tag"/></a>
 <a href="https://github.com/bergkamp/video-comparison-player/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/bergkamp/video-comparison-player"></a>
+<img src="https://img.shields.io/badge/mac%20os-000000?logo=apple&logoColor=white" />
+<img src="https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white" />
 
+
+<img width="300px" src="./codec.png" />
 
 EN|[中文](README-ZH.md)
 
