@@ -21,7 +21,8 @@
     "fluent-ffmpeg": "^2.1.2",
     "vue": "^2.7.4",
     "vue-i18n": "^8.27.2",
-    "vue-json-pretty": "^1.8.3"
+    "vue-json-pretty": "^1.8.3",
+    "vue-zoomer": "^0.3.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

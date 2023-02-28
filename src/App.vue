@@ -84,12 +84,13 @@
                         >
                             <source src="" type="" />
                         </video>
-                        <img
-                            v-show="leftView.isVideo === false"
-                            ref="leftImage"
-                            class="image-player"
-                            src=""
-                        />
+                        <v-zoomer v-show="leftView.isVideo === false"
+                        :max-scale="10"
+                        :zooming-elastic="false"
+                        :zoomed.sync="zoomed"
+                        class="image-player">
+                            <img src="" ref="leftImage" style="object-fit: contain; width: 100%; height: 100%;">
+                        </v-zoomer>
                     </div>
                     <div
                         class="img-comp-line"
@@ -166,6 +167,7 @@
 const shell = require("electron").shell;
 
 import fluentFfmpeg from "./components/Ffmpeg";
+import VueZoomer from 'vue-zoomer';
 
 export default {
     name: "App",
@@ -208,14 +210,17 @@ export default {
                 durations: 0,
             },
             infoShow: false,
-            infoShowBtnDisabled: true
+            infoShowBtnDisabled: true,
+            zoomed:false,
         };
     },
     created() {
         document.title = this.$t("AppName");
         document.addEventListener("keydown",this.keyAlias);
     },
-    components: {},
+    components: {
+        VZoomer: VueZoomer.Zoomer
+    },
     mounted() {
         this.leftView.player = this.$refs.leftPlayer;
         this.rightView.player = this.$refs.rightPlayer;
